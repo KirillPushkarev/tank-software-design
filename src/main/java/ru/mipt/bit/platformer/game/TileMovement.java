@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.util;
+package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
@@ -17,8 +17,9 @@ public class TileMovement {
         this.interpolation = interpolation;
     }
 
-    public Rectangle moveRectangleBetweenTileCenters(Rectangle rectangle, GridPoint2 fromTileCoordinates, GridPoint2 toTileCoordinates, float progress) {
-        moveRectangleAtTileCenter(tileLayer, rectangle, fromTileCoordinates);
+    public void moveGameObjectBetweenTileCenters(GameObject gameObject, GridPoint2 toTileCoordinates, float progress) {
+        Rectangle rectangle = gameObject.getRectangle();
+        moveRectangleAtTileCenter(tileLayer, rectangle, gameObject.getGridCoordinates());
         float fromTileBottomLeftX = rectangle.x;
         float fromTileBottomLeftY = rectangle.y;
 
@@ -29,7 +30,7 @@ public class TileMovement {
         float intermediateBottomLeftX = interpolation.apply(fromTileBottomLeftX, toTileBottomLeftX, progress);
         float intermediateBottomLeftY = interpolation.apply(fromTileBottomLeftY, toTileBottomLeftY, progress);
 
-        return rectangle
+        rectangle
                 .setX(intermediateBottomLeftX)
                 .setY(intermediateBottomLeftY);
     }
