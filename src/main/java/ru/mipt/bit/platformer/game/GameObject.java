@@ -32,6 +32,6 @@ public class GameObject {
     }
 
     public boolean hasCollisionInDirection(GridPoint2 otherCoordinates, Direction direction) {
-        return getGridCoordinates().equals(direction.getNextCoordinates(otherCoordinates));
+        return direction.getNextCoordinates(gridCoordinates).equals(otherCoordinates);
     }
 }

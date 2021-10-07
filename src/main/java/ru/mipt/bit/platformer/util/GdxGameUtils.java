@@ -15,10 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.NoSuchElementException;
 
 public final class GdxGameUtils {
-
-    private GdxGameUtils() {
-    }
-
     public static MapRenderer createSingleLayerMapRenderer(TiledMap tiledMap, Batch batch) {
         TiledMapTileLayer tileLayer = MapUtils.getSingleLayer(tiledMap);
         float viewWidth = tileLayer.getWidth() * tileLayer.getTileWidth();

@@ -50,7 +50,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         progressCalculator = new ProgressCalculator();
 
         GridPoint2 playerCoordinates = new GridPoint2(1, 1);
-        player = new Player(playerCoordinates, blueTankTexture.getWidth(), blueTankTexture.getHeight(), coordinatesCalculator, progressCalculator);
+        player = new Player(playerCoordinates, blueTankTexture.getWidth(), blueTankTexture.getHeight(), progressCalculator);
 
         GridPoint2 treeCoordinates = new GridPoint2(1, 3);
         treeObstacle = new GameObject(treeCoordinates, greenTreeTexture.getWidth(), greenTreeTexture.getHeight());
