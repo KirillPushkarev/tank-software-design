@@ -7,13 +7,13 @@ import com.badlogic.gdx.maps.MapRenderer;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class LibGdxGameRenderer implements Renderer {
-    private final MapRenderer levelRenderer;
+    private final MapRenderer mapRenderer;
     private final Batch batch;
     private final Renderer playerRenderer;
     private final Renderer treeRenderer;
 
     public LibGdxGameRenderer(MapRenderer levelRenderer, Batch batch, Renderer playerRenderer, Renderer treeRenderer) {
-        this.levelRenderer = levelRenderer;
+        this.mapRenderer = levelRenderer;
         this.batch = batch;
         this.playerRenderer = playerRenderer;
         this.treeRenderer = treeRenderer;
@@ -26,7 +26,7 @@ public class LibGdxGameRenderer implements Renderer {
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         // render each tile of the level
-        levelRenderer.render();
+        mapRenderer.render();
 
         // start recording all drawing commands
         batch.begin();

@@ -12,10 +12,12 @@ public class Player extends GameObject {
     protected GridPoint2 playerDestinationGridCoordinates = null;
     protected float playerMovementProgress = MOVEMENT_PROGRESS_END;
     protected final ProgressCalculator progressCalculator;
+    private final ColliderManager colliderManager;
 
-    public Player(GridPoint2 initialCoordinates, int width, int height, ProgressCalculator progressCalculator) {
+    public Player(GridPoint2 initialCoordinates, int width, int height, ProgressCalculator progressCalculator, ColliderManager colliderManager) {
         super(initialCoordinates, width, height);
         this.progressCalculator = progressCalculator;
+        this.colliderManager = colliderManager;
     }
 
     public GridPoint2 getPlayerDestinationGridCoordinates() {
@@ -26,8 +28,8 @@ public class Player extends GameObject {
         return playerMovementProgress;
     }
 
-    public void move(Direction direction, GameObject obstacle, float deltaTime) {
-        handleRotation(direction, obstacle);
+    public void move(Direction direction, float deltaTime) {
+        handleRotation(direction);
         handleMovement(deltaTime);
     }
 
@@ -35,11 +37,11 @@ public class Player extends GameObject {
         return isEqual(playerMovementProgress, MOVEMENT_PROGRESS_END);
     }
 
-    private void handleRotation(Direction direction, GameObject obstacle) {
+    private void handleRotation(Direction direction) {
         if (isStopped() && direction != Direction.NONE) {
             rotate(direction.getRotation());
 
-            if (!hasCollisionInDirection(obstacle.getGridCoordinates(), direction)) {
+            if (!colliderManager.hasCollisionInDirection(getGridCoordinates(), direction)) {
                 playerDestinationGridCoordinates = direction.getNextCoordinates(gridCoordinates);
                 playerMovementProgress = MOVEMENT_PROGRESS_START;
             }
