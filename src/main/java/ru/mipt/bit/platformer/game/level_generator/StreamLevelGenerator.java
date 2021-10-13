@@ -1,34 +1,29 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
-import ru.mipt.bit.platformer.game.level_generator.LevelGeneratorInterface;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 public class StreamLevelGenerator implements LevelGeneratorInterface {
-    private final String fileName;
+    private final Reader reader;
 
-    public StreamLevelGenerator(String fileName) {
-        this.fileName = fileName;
+    public StreamLevelGenerator(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
     public int[][] generateLevelLayout(int gridWidth, int gridHeight) throws IOException {
         int[][] grid = new int[gridHeight][gridWidth];
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            generateGameObjectPositions(gridHeight, grid, reader);
-        }
+        generateGameObjectPositions(gridWidth, gridHeight, grid, reader);
+        reader.close();
 
         return grid;
     }
 
-    private void generateGameObjectPositions(int gridHeight, int[][] grid, BufferedReader reader) throws IOException {
+    private void generateGameObjectPositions(int gridWidth, int gridHeight, int[][] grid, Reader reader) throws IOException {
         for (int i = 0; i < gridHeight; i++) {
-            var line = reader.readLine();
-            for (int j = 0; j < line.length(); j++) {
-                var symbol = line.charAt(j);
+            for (int j = 0; j < gridWidth; j++) {
+                var symbol = (char) reader.read();
 
                 switch (symbol) {
                     case '_':

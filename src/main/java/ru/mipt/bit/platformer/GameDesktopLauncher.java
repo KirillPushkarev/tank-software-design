@@ -19,6 +19,8 @@ import ru.mipt.bit.platformer.game.renderer.LibGdxGameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.util.MapUtils;
 
+import java.util.Random;
+
 public class GameDesktopLauncher implements ApplicationListener {
     public static final String LEVEL_TMX = "level.tmx";
     public static final String TANK_IMAGE_PATH = "images/tank_blue.png";
@@ -47,7 +49,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         levelTiledMap = new TmxMapLoader().load(LEVEL_TMX);
         TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        Level level = new Level(new RandomLevelGenerator().generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT));
+        Level level = new Level(new RandomLevelGenerator(new Random()).generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT));
         player = level.getPlayer();
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
