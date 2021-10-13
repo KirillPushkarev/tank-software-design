@@ -30,8 +30,4 @@ public class GameObject {
     public Rectangle getRectangle() {
         return rectangle;
     }
-
-    public boolean hasCollisionInDirection(GridPoint2 otherCoordinates, Direction direction) {
-        return direction.getNextCoordinates(gridCoordinates).equals(otherCoordinates);
-    }
 }

@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,46 +12,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class PlayerTest {
+    private static ColliderManager colliderManager;
+
+    @BeforeAll
+    static void beforeAll() {
+        var level = new Level(new int[][]{
+                {0, 0, 0},
+                {0, 0, 0},
+                {0, 0, 1}
+        });
+        colliderManager = new ColliderManager(level);
+    }
+
     @ParameterizedTest
-    @MethodSource
-    void moveFromInitialPosition(Player player, Direction direction, GameObject obstacle, float deltaTime, float expectedRotation, float expectedProgress) {
-        player.move(direction, obstacle, deltaTime);
+    @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePosition"})
+    void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
+        player.move(direction, deltaTime);
 
         assertEquals(expectedRotation, player.getRotation());
         assertEquals(expectedProgress, player.getPlayerMovementProgress());
+        assertEquals(expectedDestinationCoordinates, player.getPlayerDestinationGridCoordinates());
     }
 
     private static Stream<Arguments> moveFromInitialPosition() {
         var progressCalculator = new ProgressCalculator();
-        var obstacle = new GameObject(new GridPoint2(2, 2), 5, 5);
 
         return Stream.of(
-                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator), Direction.NONE, obstacle, 0.2f, 0f, 1.0f),
-                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator), Direction.RIGHT, obstacle, 0.2f, 0f, 0.5f),
-                arguments(new Player(new GridPoint2(1, 2), 5, 5, progressCalculator), Direction.RIGHT, obstacle, 0.2f, 0f, 1.0f)
+                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager), Direction.NONE, 0.2f, 0f, 1.0f, null),
+                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager), Direction.RIGHT, 0.2f, 0f, 0.5f, new GridPoint2(1, 0)),
+                arguments(new Player(new GridPoint2(1, 2), 5, 5, progressCalculator, colliderManager), Direction.RIGHT, 0.2f, 0f, 1.0f, null)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void moveFromIntermediatePosition(Player player, Direction direction, GameObject obstacle, float deltaTime, float expectedRotation, float expectedProgress) {
-        player.move(direction, obstacle, deltaTime);
-
-        assertEquals(expectedRotation, player.getRotation());
-        assertEquals(expectedProgress, player.getPlayerMovementProgress());
     }
 
     private static Stream<Arguments> moveFromIntermediatePosition() {
         var progressCalculator = new ProgressCalculator();
-        var obstacle = new GameObject(new GridPoint2(2, 2), 5, 5);
-        var player1 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator);
-        player1.move(Direction.UP, obstacle, 0.2f);
-        var player2 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator);
-        player2.move(Direction.UP, obstacle, 0.2f);
+        var player1 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
+        player1.move(Direction.UP, 0.2f);
+        var player2 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
+        player2.move(Direction.UP, 0.2f);
 
         return Stream.of(
-                arguments(player1, Direction.NONE, obstacle, 0.2f, 90f, 1f),
-                arguments(player2, Direction.DOWN, obstacle, 0.2f, 90f, 1f)
+                arguments(player1, Direction.NONE, 0.2f, 90f, 1f, null),
+                arguments(player2, Direction.RIGHT, 0.1f, 90f, 0.75f, new GridPoint2(0, 1))
         );
     }
 }

@@ -10,24 +10,26 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.game.*;
+import ru.mipt.bit.platformer.game.input.InputController;
+import ru.mipt.bit.platformer.game.level_generator.RandomLevelGenerator;
 import ru.mipt.bit.platformer.game.renderer.GameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.LibGdxGameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.util.MapUtils;
 
+import java.util.Random;
+
 public class GameDesktopLauncher implements ApplicationListener {
     public static final String LEVEL_TMX = "level.tmx";
     public static final String TANK_IMAGE_PATH = "images/tank_blue.png";
     public static final String TREE_IMAGE_PATH = "images/greenTree.png";
+    public static final int LEVEL_WIDTH = 10;
+    public static final int LEVEL_HEIGHT = 8;
 
-    private TiledMap levelMap;
+    private TiledMap levelTiledMap;
     private Player player;
-    private GameObject treeObstacle;
-    private CoordinatesCalculator coordinatesCalculator;
-    private ProgressCalculator progressCalculator;
 
     private final InputController inputController = new InputController();
 
@@ -44,18 +46,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         blueTankTexture = new Texture(TANK_IMAGE_PATH);
         greenTreeTexture = new Texture(TREE_IMAGE_PATH);
 
-        levelMap = new TmxMapLoader().load(LEVEL_TMX);
-        TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelMap);
-        coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
-        progressCalculator = new ProgressCalculator();
+        levelTiledMap = new TmxMapLoader().load(LEVEL_TMX);
+        TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        GridPoint2 playerCoordinates = new GridPoint2(1, 1);
-        player = new Player(playerCoordinates, blueTankTexture.getWidth(), blueTankTexture.getHeight(), progressCalculator);
-
-        GridPoint2 treeCoordinates = new GridPoint2(1, 3);
-        treeObstacle = new GameObject(treeCoordinates, greenTreeTexture.getWidth(), greenTreeTexture.getHeight());
-
-        gameRenderer = gameRendererFactory.createGameRenderer(levelMap, player, treeObstacle, coordinatesCalculator, blueTankTexture, greenTreeTexture);
+        Level level = new Level(new RandomLevelGenerator(new Random()).generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT));
+        player = level.getPlayer();
+        CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
+        gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         Direction direction = inputController.getDirection();
-        player.move(direction, treeObstacle, deltaTime);
+        player.move(direction, deltaTime);
 
         gameRenderer.render();
     }
@@ -88,7 +85,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
         greenTreeTexture.dispose();
         blueTankTexture.dispose();
-        levelMap.dispose();
+        levelTiledMap.dispose();
         batch.dispose();
     }
 
