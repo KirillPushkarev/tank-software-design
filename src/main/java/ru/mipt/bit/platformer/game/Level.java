@@ -77,7 +77,10 @@ public class Level {
     }
 
     public boolean hasObstacleInPosition(GridPoint2 position) {
-        return obstacles.stream().anyMatch(obstacle -> obstacle.gridCoordinates.equals(position)) ||
-                tanks.stream().anyMatch(tank -> tank.getMovingGameObject().gridCoordinates.equals(position));
+        return obstacles.stream().anyMatch(obstacle -> obstacle.getGridCoordinates().equals(position)) ||
+                tanks.stream().anyMatch(tank -> tank.getMovingGameObject().getGridCoordinates().equals(position)) ||
+                tanks.stream().anyMatch(tank -> tank.getMovingGameObject().isMoving() && tank.getMovingGameObject().getDestinationGridCoordinates().equals(position)) ||
+                player.getMovingGameObject().getGridCoordinates().equals(position) ||
+                player.getMovingGameObject().isMoving() && player.getMovingGameObject().getDestinationGridCoordinates().equals(position);
     }
 }

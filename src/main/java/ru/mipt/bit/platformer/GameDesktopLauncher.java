@@ -11,10 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.game.CoordinatesCalculator;
-import ru.mipt.bit.platformer.game.Direction;
-import ru.mipt.bit.platformer.game.Level;
-import ru.mipt.bit.platformer.game.Player;
+import ru.mipt.bit.platformer.game.*;
 import ru.mipt.bit.platformer.game.input.InputController;
 import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
 import ru.mipt.bit.platformer.game.renderer.GameRendererFactory;
@@ -43,8 +40,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     private List<Tank> tanks;
 
     private final InputController inputController = new InputController();
-
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
+    private final TankMovementScheduler tankMovementScheduler = new TankMovementScheduler();
     private Renderer gameRenderer;
     private Batch batch;
     private Texture blueTankTexture;
@@ -85,8 +82,12 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Direction direction = inputController.getDirection();
-        player.move(direction, deltaTime);
+        Direction playerDirection = inputController.getDirection();
+        player.move(playerDirection, deltaTime);
+
+        for (Tank tank : tanks) {
+            tankMovementScheduler.scheduleMovement(tank, deltaTime);
+        }
 
         gameRenderer.render();
     }
