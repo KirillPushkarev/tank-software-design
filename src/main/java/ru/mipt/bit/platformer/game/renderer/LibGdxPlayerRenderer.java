@@ -15,15 +15,15 @@ public class LibGdxPlayerRenderer extends AbstractLibGdxRenderer {
         this.player = player;
         this.coordinatesCalculator = coordinatesCalculator;
 
-        this.coordinatesCalculator.moveRectangleAtTileCenter(groundLayer, player.getRectangle(), player.getGridCoordinates());
+        this.coordinatesCalculator.moveRectangleAtTileCenter(groundLayer, player.getMovingGameObject().getRectangle(), player.getMovingGameObject().getGridCoordinates());
     }
 
     @Override
     public void render() {
-        if (player.getPlayerDestinationGridCoordinates() != null) {
-            coordinatesCalculator.moveGameObjectBetweenTileCenters(player, player.getPlayerDestinationGridCoordinates(), player.getPlayerMovementProgress());
+        if (player.getMovingGameObject().getDestinationGridCoordinates() != null) {
+            coordinatesCalculator.moveGameObjectBetweenTileCenters(player.getMovingGameObject(), player.getMovingGameObject().getDestinationGridCoordinates(), player.getMovingGameObject().getMovementProgress());
         }
 
-        drawTextureRegionUnscaled(player.getRectangle(), player.getRotation());
+        drawTextureRegionUnscaled(player.getMovingGameObject().getRectangle(), player.getMovingGameObject().getRotation());
     }
 }

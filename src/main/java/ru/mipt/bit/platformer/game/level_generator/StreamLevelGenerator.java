@@ -1,5 +1,7 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
+import ru.mipt.bit.platformer.game.Level;
+
 import java.io.IOException;
 import java.io.Reader;
 
@@ -27,13 +29,16 @@ public class StreamLevelGenerator implements LevelGeneratorInterface {
 
                 switch (symbol) {
                     case '_':
-                        grid[i][j] = 0;
+                        grid[i][j] = Level.GRASS_MARKER;
                         break;
                     case 'T':
-                        grid[i][j] = 1;
+                        grid[i][j] = Level.OBSTACLE_MARKER;
                         break;
                     case 'X':
-                        grid[i][j] = 2;
+                        grid[i][j] = Level.TANK_MARKER;
+                        break;
+                    case 'P':
+                        grid[i][j] = Level.PLAYER_MARKER;
                         break;
                     default:
                         throw new IllegalArgumentException("Unsupported level symbol");

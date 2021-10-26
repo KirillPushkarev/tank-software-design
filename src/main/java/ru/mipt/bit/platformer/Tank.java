@@ -1,11 +1,15 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.game.ColliderManager;
+import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.MovingGameObject;
+import ru.mipt.bit.platformer.game.ProgressCalculator;
 
-public class Player {
+public class Tank {
     private final MovingGameObject movingGameObject;
 
-    public Player(GridPoint2 initialCoordinates, int width, int height, ProgressCalculator progressCalculator, ColliderManager colliderManager) {
+    public Tank(GridPoint2 initialCoordinates, int width, int height, ProgressCalculator progressCalculator, ColliderManager colliderManager) {
         movingGameObject = new MovingGameObject(initialCoordinates, width, height, progressCalculator, colliderManager);
     }
 

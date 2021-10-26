@@ -1,8 +1,11 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
+import ru.mipt.bit.platformer.game.Level;
+
 import java.util.Random;
 
 public class RandomLevelGenerator implements LevelGeneratorInterface {
+    private static final int ENVIRONMENT_OBJECT_TYPES_COUNT = 3;
     private final Random randomGenerator;
 
     public RandomLevelGenerator(Random randomGenerator) {
@@ -22,7 +25,7 @@ public class RandomLevelGenerator implements LevelGeneratorInterface {
     private void generateObstaclePositions(int gridWidth, int gridHeight, int[][] grid, Random randomGenerator) {
         for (int i = 0; i < gridHeight; i++) {
             for (int j = 0; j < gridWidth; j++) {
-                int cellMarker = randomGenerator.nextInt(2);
+                int cellMarker = randomGenerator.nextInt(ENVIRONMENT_OBJECT_TYPES_COUNT);
                 grid[i][j] = cellMarker;
             }
         }
@@ -35,8 +38,8 @@ public class RandomLevelGenerator implements LevelGeneratorInterface {
         do {
             playerPositionY = randomGenerator.nextInt(gridHeight);
             playerPositionX = randomGenerator.nextInt(gridWidth);
-        } while (grid[playerPositionY][playerPositionX] != 0);
+        } while (grid[playerPositionY][playerPositionX] != Level.GRASS_MARKER);
 
-        grid[playerPositionY][playerPositionX] = 2;
+        grid[playerPositionY][playerPositionX] = Level.PLAYER_MARKER;
     }
 }

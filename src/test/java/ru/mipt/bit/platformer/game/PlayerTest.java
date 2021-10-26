@@ -29,9 +29,9 @@ class PlayerTest {
     void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
         player.move(direction, deltaTime);
 
-        assertEquals(expectedRotation, player.getRotation());
-        assertEquals(expectedProgress, player.getPlayerMovementProgress());
-        assertEquals(expectedDestinationCoordinates, player.getPlayerDestinationGridCoordinates());
+        assertEquals(expectedRotation, player.getMovingGameObject().getRotation());
+        assertEquals(expectedProgress, player.getMovingGameObject().getMovementProgress());
+        assertEquals(expectedDestinationCoordinates, player.getMovingGameObject().getDestinationGridCoordinates());
     }
 
     private static Stream<Arguments> moveFromInitialPosition() {

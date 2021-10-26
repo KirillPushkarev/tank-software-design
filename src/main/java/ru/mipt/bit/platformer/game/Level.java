@@ -1,19 +1,27 @@
 package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.Tank;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
-    private static final int OBSTACLE_WIDTH = 128;
+    public static final int GRASS_MARKER = 0;
+    public static final int OBSTACLE_MARKER = 1;
+    public static final int TANK_MARKER = 2;
+    public static final int PLAYER_MARKER = 3;
+
+    private static final int TREE_WIDTH = 128;
     private static final int OBSTACLE_HEIGHT = 128;
 
-    private static final int PLAYER_WIDTH = 92;
-    private static final int PLAYER_HEIGHT = 84;
+    private static final int TANK_WIDTH = 92;
+    private static final int TANK_HEIGHT = 84;
 
+    private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private Player player;
     private final List<GameObject> obstacles = new ArrayList<>();
+    private final List<Tank> tanks = new ArrayList<>();
 
     public Player getPlayer() {
         return player;
@@ -28,27 +36,36 @@ public class Level {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 1) {
+                if (grid[i][j] == OBSTACLE_MARKER) {
                     addObstacle(i, j);
                 }
 
-                if (grid[i][j] == 2) {
+                if (grid[i][j] == TANK_MARKER) {
+                    addTank(colliderManager, i, j);
+                }
+
+                if (grid[i][j] == PLAYER_MARKER) {
                     addPlayer(colliderManager, i, j);
                 }
             }
         }
     }
 
-    private void addPlayer(ColliderManager colliderManager, int i, int j) {
-        GridPoint2 coordinates = new GridPoint2(j, i);
-        ProgressCalculator progressCalculator = new ProgressCalculator();
-        this.player = new Player(coordinates, PLAYER_WIDTH, PLAYER_HEIGHT, progressCalculator, colliderManager);
-    }
-
     private void addObstacle(int i, int j) {
         GridPoint2 coordinates = new GridPoint2(j, i);
-        var obstacle = new GameObject(coordinates, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+        var obstacle = new GameObject(coordinates, TREE_WIDTH, OBSTACLE_HEIGHT);
         obstacles.add(obstacle);
+    }
+
+    private void addTank(ColliderManager colliderManager, int i, int j) {
+        GridPoint2 coordinates = new GridPoint2(j, i);
+        var tank = new Tank(coordinates, TANK_WIDTH, TANK_HEIGHT, progressCalculator, colliderManager);
+        tanks.add(tank);
+    }
+
+    private void addPlayer(ColliderManager colliderManager, int i, int j) {
+        GridPoint2 coordinates = new GridPoint2(j, i);
+        this.player = new Player(coordinates, TANK_WIDTH, TANK_HEIGHT, progressCalculator, colliderManager);
     }
 
     public boolean hasObstacleInPosition(GridPoint2 position) {
