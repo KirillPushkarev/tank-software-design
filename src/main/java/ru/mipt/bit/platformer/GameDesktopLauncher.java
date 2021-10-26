@@ -69,8 +69,11 @@ public class GameDesktopLauncher implements ApplicationListener {
         Level level = null;
         try {
             var inputStream = new BufferedReader(new FileReader(FileUtils.readFileFromResources(LEVEL_MAP)));
-            level = new Level(new StreamLevelGenerator(inputStream)
-                    .generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT));
+            level = new Level(
+                    new StreamLevelGenerator(inputStream).generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT),
+                    LEVEL_WIDTH,
+                    LEVEL_HEIGHT
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }

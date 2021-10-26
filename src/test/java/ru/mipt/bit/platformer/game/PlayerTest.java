@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_HEIGHT;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_WIDTH;
 
 class PlayerTest {
     private static ColliderManager colliderManager;
@@ -20,7 +22,7 @@ class PlayerTest {
                 {0, 0, 0},
                 {0, 0, 0},
                 {0, 0, 1}
-        });
+        }, LEVEL_WIDTH, LEVEL_HEIGHT);
         colliderManager = new ColliderManager(level);
     }
 

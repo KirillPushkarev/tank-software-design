@@ -19,9 +19,10 @@ public class Level {
     private static final int TANK_HEIGHT = 84;
 
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
+    private final int levelWidth;
+    private final int levelHeight;
     private Player player;
     private final List<GameObject> obstacles = new ArrayList<>();
-
     private final List<Tank> tanks = new ArrayList<>();
 
     public Player getPlayer() {
@@ -36,11 +37,17 @@ public class Level {
         return tanks;
     }
 
-    public Level(int[][] grid) {
+    public Level(int[][] grid, int levelWidth, int levelHeight) {
+        this.levelWidth = levelWidth;
+        this.levelHeight = levelHeight;
         ColliderManager colliderManager = new ColliderManager(this);
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+        generateObjectsFromGrid(grid, colliderManager);
+    }
+
+    private void generateObjectsFromGrid(int[][] grid, ColliderManager colliderManager) {
+        for (int i = 0; i < levelHeight; i++) {
+            for (int j = 0; j < levelWidth; j++) {
                 int x = j;
                 int y = grid.length - 1 - i;
 
@@ -77,10 +84,15 @@ public class Level {
     }
 
     public boolean hasObstacleInPosition(GridPoint2 position) {
-        return obstacles.stream().anyMatch(obstacle -> obstacle.getGridCoordinates().equals(position)) ||
+        return isBeyondBoundaries(position) ||
+                obstacles.stream().anyMatch(obstacle -> obstacle.getGridCoordinates().equals(position)) ||
                 tanks.stream().anyMatch(tank -> tank.getMovingGameObject().getGridCoordinates().equals(position)) ||
                 tanks.stream().anyMatch(tank -> tank.getMovingGameObject().isMoving() && tank.getMovingGameObject().getDestinationGridCoordinates().equals(position)) ||
                 player.getMovingGameObject().getGridCoordinates().equals(position) ||
                 player.getMovingGameObject().isMoving() && player.getMovingGameObject().getDestinationGridCoordinates().equals(position);
+    }
+
+    private boolean isBeyondBoundaries(GridPoint2 position) {
+        return position.x < 0 || position.x >= levelWidth || position.y < 0 || position.y >= levelHeight;
     }
 }

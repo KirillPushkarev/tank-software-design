@@ -3,12 +3,15 @@ package ru.mipt.bit.platformer.game;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_HEIGHT;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_WIDTH;
 
 class ColliderManagerTest {
     @Test
     void hasCollisionInDirection() {
-        var colliderManager = new ColliderManager(new Level(new int[][] {{1, 1, 1}, {1, 2, 0}, {0, 0, 0}}));
+        var colliderManager = new ColliderManager(new Level(new int[][] {{1, 1, 1}, {1, 2, 0}, {0, 0, 0}}, LEVEL_WIDTH, LEVEL_HEIGHT));
         GridPoint2 objectCoordinates = new GridPoint2(1, 1);
 
         assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.LEFT));
