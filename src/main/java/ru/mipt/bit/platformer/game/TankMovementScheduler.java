@@ -1,6 +1,9 @@
 package ru.mipt.bit.platformer.game;
 
-import ru.mipt.bit.platformer.Tank;
+import ru.mipt.bit.platformer.game.command.Command;
+import ru.mipt.bit.platformer.game.command.MoveCommand;
+import ru.mipt.bit.platformer.game.entity.MovingGameObject;
+import ru.mipt.bit.platformer.game.entity.Tank;
 
 import java.util.Random;
 
@@ -11,18 +14,18 @@ public class TankMovementScheduler {
     public void scheduleMovement(Tank tank, float deltaTime) {
         Direction tankDirection;
 
-        if (!tank.getMovingGameObject().isMoving()) {
+        MovingGameObject tankMovingGameObject = tank.getMovingGameObject();
+        if (tankMovingGameObject.isMoving()) {
+            tankDirection = tankMovingGameObject.getLastDirection();
+        } else {
             if (shouldChangeDirection()) {
                 tankDirection = Direction.getRandomDirection();
             } else {
-                tankDirection = tank.getMovingGameObject().getLastDirection();
+                tankDirection = tankMovingGameObject.getLastDirection();
             }
-
-        } else {
-            tankDirection = tank.getMovingGameObject().getLastDirection();
         }
 
-        Command tankMoveCommand = new MoveCommand(tank.getMovingGameObject(), tankDirection, deltaTime);
+        Command tankMoveCommand = new MoveCommand(tankMovingGameObject, tankDirection, deltaTime);
         tankMoveCommand.execute();
     }
 

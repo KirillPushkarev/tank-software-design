@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,5 +29,9 @@ public class GameObject {
 
     public Rectangle getRectangle() {
         return rectangle;
+    }
+
+    public boolean holdsPosition(GridPoint2 position) {
+        return gridCoordinates.equals(position);
     }
 }

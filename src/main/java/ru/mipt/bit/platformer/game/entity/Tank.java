@@ -1,9 +1,7 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.game.ColliderManager;
-import ru.mipt.bit.platformer.game.Direction;
-import ru.mipt.bit.platformer.game.MovingGameObject;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 
 public class Tank {
@@ -16,9 +14,5 @@ public class Tank {
 
     public MovingGameObject getMovingGameObject() {
         return movingGameObject;
-    }
-
-    public void move(Direction direction, float deltaTime) {
-        movingGameObject.move(direction, deltaTime);
     }
 }

@@ -1,4 +1,7 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.command;
+
+import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.entity.MovingGameObject;
 
 public class MoveCommand implements Command {
     private final MovingGameObject movingGameObject;

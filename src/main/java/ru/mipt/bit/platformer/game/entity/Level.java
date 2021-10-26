@@ -1,7 +1,8 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.Tank;
+import ru.mipt.bit.platformer.game.ColliderManager;
+import ru.mipt.bit.platformer.game.ProgressCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,20 @@ public class Level {
     private static final int TANK_WIDTH = 92;
     private static final int TANK_HEIGHT = 84;
 
-    private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private final int levelWidth;
     private final int levelHeight;
+    private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private Player player;
     private final List<GameObject> obstacles = new ArrayList<>();
     private final List<Tank> tanks = new ArrayList<>();
+
+    public int getLevelWidth() {
+        return levelWidth;
+    }
+
+    public int getLevelHeight() {
+        return levelHeight;
+    }
 
     public Player getPlayer() {
         return player;
@@ -81,18 +90,5 @@ public class Level {
     private void addPlayer(ColliderManager colliderManager, int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
         this.player = new Player(coordinates, TANK_WIDTH, TANK_HEIGHT, progressCalculator, colliderManager);
-    }
-
-    public boolean hasObstacleInPosition(GridPoint2 position) {
-        return isBeyondBoundaries(position) ||
-                obstacles.stream().anyMatch(obstacle -> obstacle.getGridCoordinates().equals(position)) ||
-                tanks.stream().anyMatch(tank -> tank.getMovingGameObject().getGridCoordinates().equals(position)) ||
-                tanks.stream().anyMatch(tank -> tank.getMovingGameObject().isMoving() && tank.getMovingGameObject().getDestinationGridCoordinates().equals(position)) ||
-                player.getMovingGameObject().getGridCoordinates().equals(position) ||
-                player.getMovingGameObject().isMoving() && player.getMovingGameObject().getDestinationGridCoordinates().equals(position);
-    }
-
-    private boolean isBeyondBoundaries(GridPoint2 position) {
-        return position.x < 0 || position.x >= levelWidth || position.y < 0 || position.y >= levelHeight;
     }
 }

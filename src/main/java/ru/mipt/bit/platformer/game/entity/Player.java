@@ -1,6 +1,9 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.game.ColliderManager;
+import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.ProgressCalculator;
 
 public class Player {
     private static final float TIME_OF_PASSING_ONE_TILE = 0.3f;

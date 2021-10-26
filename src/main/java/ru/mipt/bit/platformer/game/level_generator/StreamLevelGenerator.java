@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
-import ru.mipt.bit.platformer.game.Level;
+import ru.mipt.bit.platformer.game.entity.Level;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,15 +15,12 @@ public class StreamLevelGenerator implements LevelGeneratorInterface {
     @Override
     public int[][] generateLevelLayout(int gridWidth, int gridHeight) throws IOException {
         int[][] grid = new int[gridHeight][gridWidth];
-
-        generateGameObjectPositions(gridWidth, gridHeight, grid);
-        reader.close();
-
+        generateGameObjectPositions(grid);
         return grid;
     }
 
-    private void generateGameObjectPositions(int gridWidth, int gridHeight, int[][] grid) throws IOException {
-        for (int i = 0; i < gridHeight; i++) {
+    private void generateGameObjectPositions(int[][] grid) throws IOException {
+        for (int i = 0; i < grid.length; i++) {
             String line = reader.readLine();
             for (int j = 0; j < line.length(); j++) {
                 var symbol = line.charAt(j);

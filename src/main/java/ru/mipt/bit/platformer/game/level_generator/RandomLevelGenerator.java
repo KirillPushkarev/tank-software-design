@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
-import ru.mipt.bit.platformer.game.Level;
+import ru.mipt.bit.platformer.game.entity.Level;
 
 import java.util.Random;
 

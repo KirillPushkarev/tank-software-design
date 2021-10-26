@@ -1,6 +1,9 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.game.ColliderManager;
+import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.ProgressCalculator;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
@@ -45,7 +48,7 @@ public class MovingGameObject extends GameObject {
 
     public void move(Direction direction, float deltaTime) {
         handleRotation(direction);
-        handleMovement(deltaTime);
+        updateMovement(deltaTime);
     }
 
     private void handleRotation(Direction direction) {
@@ -54,13 +57,17 @@ public class MovingGameObject extends GameObject {
             rotate(this.lastDirection.getRotation());
 
             if (!colliderManager.hasCollisionInDirection(getGridCoordinates(), this.lastDirection)) {
-                destinationGridCoordinates = this.lastDirection.getNextCoordinates(gridCoordinates);
-                movementProgress = MOVEMENT_PROGRESS_START;
+                startMovement();
             }
         }
     }
 
-    private void handleMovement(float deltaTime) {
+    private void startMovement() {
+        destinationGridCoordinates = this.lastDirection.getNextCoordinates(gridCoordinates);
+        movementProgress = MOVEMENT_PROGRESS_START;
+    }
+
+    private void updateMovement(float deltaTime) {
         if (isMoving()) {
             movementProgress = progressCalculator.continueProgress(movementProgress, deltaTime, timeOfPassingOneTile);
 
@@ -73,5 +80,10 @@ public class MovingGameObject extends GameObject {
     private void finishMovement() {
         gridCoordinates.set(destinationGridCoordinates);
         destinationGridCoordinates = null;
+    }
+
+    @Override
+    public boolean holdsPosition(GridPoint2 position) {
+        return super.holdsPosition(position) || isMoving() && destinationGridCoordinates.equals(position);
     }
 }

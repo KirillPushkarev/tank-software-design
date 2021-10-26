@@ -11,29 +11,31 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.game.*;
+import ru.mipt.bit.platformer.game.CoordinatesCalculator;
+import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.LevelLoader;
+import ru.mipt.bit.platformer.game.TankMovementScheduler;
+import ru.mipt.bit.platformer.game.entity.Level;
+import ru.mipt.bit.platformer.game.entity.Player;
+import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.input.InputController;
-import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
-import ru.mipt.bit.platformer.game.renderer.GameRendererFactory;
-import ru.mipt.bit.platformer.game.renderer.LibGdxGameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
-import ru.mipt.bit.platformer.util.FileUtils;
+import ru.mipt.bit.platformer.game.renderer.factory.GameRendererFactory;
+import ru.mipt.bit.platformer.game.renderer.factory.LibGdxGameRendererFactory;
 import ru.mipt.bit.platformer.util.MapUtils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 
 public class GameDesktopLauncher implements ApplicationListener {
-    public static final String LEVEL_MAP = "level.txt";
-    public static final String LEVEL_TMX = "level.tmx";
+    public static final String LEVEL_OBJECT_MAP = "level.txt";
+    public static final String LEVEL_TILE_MAP = "level.tmx";
     public static final String TANK_IMAGE_PATH = "images/tank_blue.png";
     public static final String TREE_IMAGE_PATH = "images/greenTree.png";
     public static final int LEVEL_WIDTH = 10;
     public static final int LEVEL_HEIGHT = 8;
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 1024;
+    private final LevelLoader levelLoader = new LevelLoader();
 
     private TiledMap levelTiledMap;
     private Player player;
@@ -54,31 +56,15 @@ public class GameDesktopLauncher implements ApplicationListener {
         blueTankTexture = new Texture(TANK_IMAGE_PATH);
         greenTreeTexture = new Texture(TREE_IMAGE_PATH);
 
-        levelTiledMap = new TmxMapLoader().load(LEVEL_TMX);
+        levelTiledMap = new TmxMapLoader().load(LEVEL_TILE_MAP);
         TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        Level level = getLevel();
+        Level level = levelLoader.getLevel();
         player = level.getPlayer();
         tanks = level.getTanks();
 
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
-    }
-
-    private Level getLevel() {
-        Level level = null;
-        try {
-            var inputStream = new BufferedReader(new FileReader(FileUtils.readFileFromResources(LEVEL_MAP)));
-            level = new Level(
-                    new StreamLevelGenerator(inputStream).generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT),
-                    LEVEL_WIDTH,
-                    LEVEL_HEIGHT
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return level;
     }
 
     @Override
@@ -87,7 +73,6 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Direction playerDirection = inputController.getDirection();
         player.move(playerDirection, deltaTime);
-
         for (Tank tank : tanks) {
             tankMovementScheduler.scheduleMovement(tank, deltaTime);
         }
