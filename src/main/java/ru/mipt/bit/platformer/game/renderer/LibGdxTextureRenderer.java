@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class AbstractLibGdxRenderer implements Renderer {
+public class LibGdxTextureRenderer {
     private final TextureRegion region;
     private final Batch batch;
 
-    public AbstractLibGdxRenderer(TextureRegion region, Batch batch) {
+    public LibGdxTextureRenderer(TextureRegion region, Batch batch) {
         this.region = region;
         this.batch = batch;
     }

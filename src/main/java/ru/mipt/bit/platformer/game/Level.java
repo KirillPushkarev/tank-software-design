@@ -21,6 +21,7 @@ public class Level {
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private Player player;
     private final List<GameObject> obstacles = new ArrayList<>();
+
     private final List<Tank> tanks = new ArrayList<>();
 
     public Player getPlayer() {
@@ -29,6 +30,10 @@ public class Level {
 
     public List<GameObject> getObstacles() {
         return obstacles;
+    }
+
+    public List<Tank> getTanks() {
+        return tanks;
     }
 
     public Level(int[][] grid) {

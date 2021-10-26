@@ -19,6 +19,7 @@ import ru.mipt.bit.platformer.game.renderer.LibGdxGameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.util.MapUtils;
 
+import java.util.List;
 import java.util.Random;
 
 public class GameDesktopLauncher implements ApplicationListener {
@@ -30,6 +31,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private TiledMap levelTiledMap;
     private Player player;
+    private List<Tank> tanks;
 
     private final InputController inputController = new InputController();
 
@@ -51,6 +53,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Level level = new Level(new RandomLevelGenerator(new Random()).generateLevelLayout(LEVEL_WIDTH, LEVEL_HEIGHT));
         player = level.getPlayer();
+        tanks = level.getTanks();
+
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
     }

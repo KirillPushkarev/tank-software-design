@@ -8,11 +8,12 @@ import ru.mipt.bit.platformer.game.GameObject;
 
 import java.util.List;
 
-public class LibGdxGameObjectBatchRenderer extends AbstractLibGdxRenderer {
+public class LibGdxGameObjectRenderer implements Renderer {
     private final List<GameObject> gameObjects;
+    private final LibGdxTextureRenderer libGdxTextureRenderer;
 
-    public LibGdxGameObjectBatchRenderer(TiledMapTileLayer groundLayer, List<GameObject> gameObjects, TextureRegion region, Batch batch, CoordinatesCalculator coordinatesCalculator) {
-        super(region, batch);
+    public LibGdxGameObjectRenderer(TiledMapTileLayer groundLayer, List<GameObject> gameObjects, TextureRegion region, Batch batch, CoordinatesCalculator coordinatesCalculator) {
+        libGdxTextureRenderer = new LibGdxTextureRenderer(region, batch);
         this.gameObjects = gameObjects;
 
         for (GameObject gameObject : gameObjects) {
@@ -23,7 +24,7 @@ public class LibGdxGameObjectBatchRenderer extends AbstractLibGdxRenderer {
     @Override
     public void render() {
         for (GameObject gameObject : gameObjects) {
-            drawTextureRegionUnscaled(gameObject.getRectangle(), gameObject.getRotation());
+            libGdxTextureRenderer.drawTextureRegionUnscaled(gameObject.getRectangle(), gameObject.getRotation());
         }
     }
 }
