@@ -5,11 +5,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.mipt.bit.platformer.game.entity.Level;
+import ru.mipt.bit.platformer.game.entity.Player;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_HEIGHT;
+import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_WIDTH;
 
 class PlayerTest {
     private static ColliderManager colliderManager;
@@ -20,7 +24,7 @@ class PlayerTest {
                 {0, 0, 0},
                 {0, 0, 0},
                 {0, 0, 1}
-        });
+        }, LEVEL_WIDTH, LEVEL_HEIGHT);
         colliderManager = new ColliderManager(level);
     }
 
@@ -29,9 +33,9 @@ class PlayerTest {
     void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
         player.move(direction, deltaTime);
 
-        assertEquals(expectedRotation, player.getRotation());
-        assertEquals(expectedProgress, player.getPlayerMovementProgress());
-        assertEquals(expectedDestinationCoordinates, player.getPlayerDestinationGridCoordinates());
+        assertEquals(expectedRotation, player.getMovingGameObject().getRotation());
+        assertEquals(expectedProgress, player.getMovingGameObject().getMovementProgress());
+        assertEquals(expectedDestinationCoordinates, player.getMovingGameObject().getDestinationGridCoordinates());
     }
 
     private static Stream<Arguments> moveFromInitialPosition() {

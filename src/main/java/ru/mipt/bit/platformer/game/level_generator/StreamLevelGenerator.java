@@ -1,43 +1,49 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
+import ru.mipt.bit.platformer.game.entity.Level;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 
 public class StreamLevelGenerator implements LevelGeneratorInterface {
-    private final Reader reader;
+    private final BufferedReader reader;
 
-    public StreamLevelGenerator(Reader reader) {
+    public StreamLevelGenerator(BufferedReader reader) {
         this.reader = reader;
     }
 
     @Override
     public int[][] generateLevelLayout(int gridWidth, int gridHeight) throws IOException {
         int[][] grid = new int[gridHeight][gridWidth];
-
-        generateGameObjectPositions(gridWidth, gridHeight, grid, reader);
-        reader.close();
-
+        generateGameObjectPositions(grid);
         return grid;
     }
 
-    private void generateGameObjectPositions(int gridWidth, int gridHeight, int[][] grid, Reader reader) throws IOException {
-        for (int i = 0; i < gridHeight; i++) {
-            for (int j = 0; j < gridWidth; j++) {
-                var symbol = (char) reader.read();
+    private void generateGameObjectPositions(int[][] grid) throws IOException {
+        for (int i = 0; i < grid.length; i++) {
+            String line = reader.readLine();
+            for (int j = 0; j < line.length(); j++) {
+                var symbol = line.charAt(j);
+                int marker;
 
                 switch (symbol) {
                     case '_':
-                        grid[i][j] = 0;
+                        marker = Level.GRASS_MARKER;
                         break;
                     case 'T':
-                        grid[i][j] = 1;
+                        marker = Level.OBSTACLE_MARKER;
                         break;
                     case 'X':
-                        grid[i][j] = 2;
+                        marker = Level.TANK_MARKER;
+                        break;
+                    case 'P':
+                        marker = Level.PLAYER_MARKER;
                         break;
                     default:
                         throw new IllegalArgumentException("Unsupported level symbol");
                 }
+
+                grid[i][j] = marker;
             }
         }
     }

@@ -9,13 +9,13 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 public class LibGdxGameRenderer implements Renderer {
     private final MapRenderer mapRenderer;
     private final Batch batch;
-    private final Renderer playerRenderer;
+    private final Renderer tankRenderer;
     private final Renderer treeRenderer;
 
-    public LibGdxGameRenderer(MapRenderer levelRenderer, Batch batch, Renderer playerRenderer, Renderer treeRenderer) {
+    public LibGdxGameRenderer(MapRenderer levelRenderer, Batch batch, Renderer tankRenderer, Renderer treeRenderer) {
         this.mapRenderer = levelRenderer;
         this.batch = batch;
-        this.playerRenderer = playerRenderer;
+        this.tankRenderer = tankRenderer;
         this.treeRenderer = treeRenderer;
     }
 
@@ -31,7 +31,7 @@ public class LibGdxGameRenderer implements Renderer {
         // start recording all drawing commands
         batch.begin();
 
-        playerRenderer.render();
+        tankRenderer.render();
         treeRenderer.render();
 
         // submit all drawing requests
