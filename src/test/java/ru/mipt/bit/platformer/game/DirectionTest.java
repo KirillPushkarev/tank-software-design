@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.mipt.bit.platformer.game.entity.Direction;
 
 import java.util.stream.Stream;
 

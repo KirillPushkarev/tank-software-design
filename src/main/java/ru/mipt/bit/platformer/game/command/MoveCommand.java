@@ -1,21 +1,21 @@
 package ru.mipt.bit.platformer.game.command;
 
-import ru.mipt.bit.platformer.game.Direction;
-import ru.mipt.bit.platformer.game.entity.MovingGameObject;
+import ru.mipt.bit.platformer.game.entity.Direction;
+import ru.mipt.bit.platformer.game.entity.GameObject;
 
 public class MoveCommand implements Command {
-    private final MovingGameObject movingGameObject;
+    private final GameObject gameObject;
     private final Direction direction;
     private final float deltaTime;
 
-    public MoveCommand(MovingGameObject movingGameObject, Direction direction, float deltaTime) {
-        this.movingGameObject = movingGameObject;
+    public MoveCommand(GameObject gameObject, Direction direction, float deltaTime) {
+        this.gameObject = gameObject;
         this.direction = direction;
         this.deltaTime = deltaTime;
     }
 
     @Override
     public void execute() {
-        movingGameObject.move(direction, deltaTime);
+        gameObject.move(direction, deltaTime);
     }
 }

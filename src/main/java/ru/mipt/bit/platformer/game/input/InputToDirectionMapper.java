@@ -1,12 +1,11 @@
 package ru.mipt.bit.platformer.game.input;
 
 import com.badlogic.gdx.Gdx;
-import ru.mipt.bit.platformer.game.Direction;
+import ru.mipt.bit.platformer.game.entity.Direction;
 
 import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.A;
 
-public class InputController {
+public class InputToDirectionMapper {
     public Direction getDirection() {
         if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W)) {
             return Direction.UP;

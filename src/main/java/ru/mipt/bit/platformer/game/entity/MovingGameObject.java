@@ -1,9 +1,8 @@
 package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.game.ColliderManager;
-import ru.mipt.bit.platformer.game.Direction;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
+import ru.mipt.bit.platformer.game.collision.ColliderManager;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
@@ -34,6 +33,7 @@ public class MovingGameObject extends GameObject {
         return destinationGridCoordinates;
     }
 
+    @Override
     public Direction getLastDirection() {
         return lastDirection;
     }
@@ -42,32 +42,34 @@ public class MovingGameObject extends GameObject {
         return movementProgress;
     }
 
+    @Override
     public boolean isMoving() {
         return destinationGridCoordinates != null;
     }
 
-    public void move(Direction direction, float deltaTime) {
-        handleRotation(direction);
-        updateMovement(deltaTime);
+    @Override
+    public boolean holdsPosition(GridPoint2 position) {
+        return super.holdsPosition(position) || isMoving() && destinationGridCoordinates.equals(position);
     }
 
-    private void handleRotation(Direction direction) {
+    @Override
+    public void move(Direction direction, float deltaTime) {
+        updateRotation(direction);
+        updateMovement(direction, deltaTime);
+    }
+
+    private void updateRotation(Direction direction) {
         if (!isMoving() && direction != Direction.NONE) {
             this.lastDirection = direction;
             rotate(this.lastDirection.getRotation());
-
-            if (!colliderManager.hasCollisionInDirection(getGridCoordinates(), this.lastDirection)) {
-                startMovement();
-            }
         }
     }
 
-    private void startMovement() {
-        destinationGridCoordinates = this.lastDirection.getNextCoordinates(gridCoordinates);
-        movementProgress = MOVEMENT_PROGRESS_START;
-    }
+    private void updateMovement(Direction direction, float deltaTime) {
+        if (!isMoving() && direction != Direction.NONE && !colliderManager.hasCollisionInDirection(getGridCoordinates(), this.lastDirection)) {
+            startMovement();
+        }
 
-    private void updateMovement(float deltaTime) {
         if (isMoving()) {
             movementProgress = progressCalculator.continueProgress(movementProgress, deltaTime, timeOfPassingOneTile);
 
@@ -77,13 +79,13 @@ public class MovingGameObject extends GameObject {
         }
     }
 
+    private void startMovement() {
+        destinationGridCoordinates = this.lastDirection.getNextCoordinates(gridCoordinates);
+        movementProgress = MOVEMENT_PROGRESS_START;
+    }
+
     private void finishMovement() {
         gridCoordinates.set(destinationGridCoordinates);
         destinationGridCoordinates = null;
-    }
-
-    @Override
-    public boolean holdsPosition(GridPoint2 position) {
-        return super.holdsPosition(position) || isMoving() && destinationGridCoordinates.equals(position);
     }
 }

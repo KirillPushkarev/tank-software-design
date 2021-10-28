@@ -1,6 +1,7 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.collision;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 
 public class ColliderManager {

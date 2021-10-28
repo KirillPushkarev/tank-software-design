@@ -34,4 +34,15 @@ public class GameObject {
     public boolean holdsPosition(GridPoint2 position) {
         return gridCoordinates.equals(position);
     }
+
+    public Direction getLastDirection() {
+        return Direction.NONE;
+    }
+
+    public boolean isMoving() {
+        return false;
+    }
+
+    public void move(Direction direction, float deltaTime) {
+    }
 }

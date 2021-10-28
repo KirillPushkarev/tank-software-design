@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.mipt.bit.platformer.game.collision.ColliderManager;
+import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.Player;
 
@@ -31,7 +33,7 @@ class PlayerTest {
     @ParameterizedTest
     @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePosition"})
     void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
-        player.move(direction, deltaTime);
+        player.getMovingGameObject().move(direction, deltaTime);
 
         assertEquals(expectedRotation, player.getMovingGameObject().getRotation());
         assertEquals(expectedProgress, player.getMovingGameObject().getMovementProgress());
@@ -51,9 +53,9 @@ class PlayerTest {
     private static Stream<Arguments> moveFromIntermediatePosition() {
         var progressCalculator = new ProgressCalculator();
         var player1 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
-        player1.move(Direction.UP, 0.2f);
+        player1.getMovingGameObject().move(Direction.UP, 0.2f);
         var player2 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
-        player2.move(Direction.UP, 0.2f);
+        player2.getMovingGameObject().move(Direction.UP, 0.2f);
 
         return Stream.of(
                 arguments(player1, Direction.NONE, 0.2f, 90f, 1f, null),

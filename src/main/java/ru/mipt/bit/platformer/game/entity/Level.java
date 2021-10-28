@@ -1,8 +1,8 @@
 package ru.mipt.bit.platformer.game.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.game.ColliderManager;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
+import ru.mipt.bit.platformer.game.collision.ColliderManager;
 
 import java.util.ArrayList;
 import java.util.List;

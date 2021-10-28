@@ -2,6 +2,8 @@ package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.api.Test;
+import ru.mipt.bit.platformer.game.collision.ColliderManager;
+import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

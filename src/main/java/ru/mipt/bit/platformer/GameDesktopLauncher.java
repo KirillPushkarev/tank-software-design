@@ -11,14 +11,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
+import org.awesome.ai.strategy.NotRecommendingAI;
 import ru.mipt.bit.platformer.game.CoordinatesCalculator;
-import ru.mipt.bit.platformer.game.Direction;
 import ru.mipt.bit.platformer.game.LevelLoader;
-import ru.mipt.bit.platformer.game.TankMovementScheduler;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.Player;
 import ru.mipt.bit.platformer.game.entity.Tank;
-import ru.mipt.bit.platformer.game.input.InputController;
+import ru.mipt.bit.platformer.game.executor.CommonActionExecutor;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.AIDirectionStrategyAdapter;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.DirectionStrategy;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.PlayerDirectionStrategy;
+import ru.mipt.bit.platformer.game.input.InputToDirectionMapper;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.game.renderer.factory.GameRendererFactory;
 import ru.mipt.bit.platformer.game.renderer.factory.LibGdxGameRendererFactory;
@@ -41,9 +44,11 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Player player;
     private List<Tank> tanks;
 
-    private final InputController inputController = new InputController();
+    private final InputToDirectionMapper inputToDirectionMapper = new InputToDirectionMapper();
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
-    private final TankMovementScheduler tankMovementScheduler = new TankMovementScheduler();
+    private final DirectionStrategy playerDirectionStrategy = new PlayerDirectionStrategy(inputToDirectionMapper);
+    private CommonActionExecutor playerCommandExecutor;
+    private CommonActionExecutor botCommandExecutor;
     private Renderer gameRenderer;
     private Batch batch;
     private Texture blueTankTexture;
@@ -63,6 +68,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         player = level.getPlayer();
         tanks = level.getTanks();
 
+        playerCommandExecutor = new CommonActionExecutor(playerDirectionStrategy);
+        DirectionStrategy aiBotDirectionStrategy = new AIDirectionStrategyAdapter(new NotRecommendingAI(), level);
+        botCommandExecutor = new CommonActionExecutor(aiBotDirectionStrategy);
+
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
     }
@@ -71,10 +80,9 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Direction playerDirection = inputController.getDirection();
-        player.move(playerDirection, deltaTime);
+        playerCommandExecutor.executeCommands(player.getMovingGameObject(), deltaTime);
         for (Tank tank : tanks) {
-            tankMovementScheduler.scheduleMovement(tank, deltaTime);
+            botCommandExecutor.executeCommands(tank.getMovingGameObject(), deltaTime);
         }
 
         gameRenderer.render();
