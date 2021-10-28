@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -18,13 +18,12 @@ class RandomLevelGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        when(randomGenerator.nextInt(2)).thenReturn(1, 0, 0, 0, 1, 0, 0, 0, 0);
-        when(randomGenerator.nextInt(3)).thenReturn(0, 1);
+        when(randomGenerator.nextInt(3)).thenReturn(1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
     }
 
     @Test
     void generateLevelLayout() {
         var generator = new RandomLevelGenerator(randomGenerator);
-        assertArrayEquals(new int[][]{{1, 2, 0}, {0, 1, 0}, {0, 0, 0}}, generator.generateLevelLayout(3, 3));
+        assertArrayEquals(new int[][]{{1, 3, 0}, {0, 1, 0}, {0, 0, 0}}, generator.generateLevelLayout(3, 3));
     }
 }

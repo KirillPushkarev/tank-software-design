@@ -46,7 +46,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private final InputToDirectionMapper inputToDirectionMapper = new InputToDirectionMapper();
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
-    private final ActionGenerator playerDirectionStrategy = new PlayerActionGenerator(inputToDirectionMapper);
+    private final ActionGenerator playerActionGenerator = new PlayerActionGenerator(inputToDirectionMapper);
     private CommonActionExecutor playerCommandExecutor;
     private CommonActionExecutor botCommandExecutor;
     private Renderer gameRenderer;
@@ -68,9 +68,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         player = level.getPlayer();
         tanks = level.getTanks();
 
-        playerCommandExecutor = new CommonActionExecutor(playerDirectionStrategy);
-        ActionGenerator aiBotDirectionStrategy = new AIActionGenerator(new NotRecommendingAI(), level);
-        botCommandExecutor = new CommonActionExecutor(aiBotDirectionStrategy);
+        playerCommandExecutor = new CommonActionExecutor(playerActionGenerator);
+        ActionGenerator botActionGenerator = new AIActionGenerator(new NotRecommendingAI(), level);
+        botCommandExecutor = new CommonActionExecutor(botActionGenerator);
 
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);

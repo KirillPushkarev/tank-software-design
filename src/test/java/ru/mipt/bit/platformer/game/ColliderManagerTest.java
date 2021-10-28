@@ -8,18 +8,16 @@ import ru.mipt.bit.platformer.game.entity.Level;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_HEIGHT;
-import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_WIDTH;
 
 class ColliderManagerTest {
     @Test
     void hasCollisionInDirection() {
-        var colliderManager = new ColliderManager(new Level(new int[][] {{1, 1, 1}, {1, 2, 0}, {0, 0, 0}}, LEVEL_WIDTH, LEVEL_HEIGHT));
+        var colliderManager = new ColliderManager(new Level(new int[][] {{1, 1, 1}, {1, 3, 0}, {0, 0, 0}}, 3, 3));
         GridPoint2 objectCoordinates = new GridPoint2(1, 1);
 
         assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.LEFT));
         assertFalse(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.RIGHT));
-        assertFalse(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.UP));
-        assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.DOWN));
+        assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.UP));
+        assertFalse(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.DOWN));
     }
 }

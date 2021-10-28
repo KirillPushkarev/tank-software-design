@@ -1,65 +1,74 @@
 package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
 import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
+import ru.mipt.bit.platformer.game.entity.MovingGameObject;
 import ru.mipt.bit.platformer.game.entity.Player;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_HEIGHT;
-import static ru.mipt.bit.platformer.GameDesktopLauncher.LEVEL_WIDTH;
 
 class PlayerTest {
-    private static ColliderManager colliderManager;
-
-    @BeforeAll
-    static void beforeAll() {
-        var level = new Level(new int[][]{
-                {0, 0, 0},
-                {0, 0, 0},
-                {0, 0, 1}
-        }, LEVEL_WIDTH, LEVEL_HEIGHT);
-        colliderManager = new ColliderManager(level);
-    }
+    private static final Level level = new Level(new int[][]{
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 1}
+    }, 3, 3);
+    private static final ColliderManager colliderManager = new ColliderManager(level);
 
     @ParameterizedTest
-    @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePosition"})
+    @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePositionDirectionNone", "moveFromIntermediatePositionDirectionRight"})
     void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
-        player.getMovingGameObject().move(direction, deltaTime);
+        MovingGameObject movingGameObject = player.getMovingGameObject();
+        movingGameObject.move(direction, deltaTime);
 
-        assertEquals(expectedRotation, player.getMovingGameObject().getRotation());
-        assertEquals(expectedProgress, player.getMovingGameObject().getMovementProgress());
-        assertEquals(expectedDestinationCoordinates, player.getMovingGameObject().getDestinationGridCoordinates());
+        assertEquals(expectedRotation, movingGameObject.getRotation());
+        assertEquals(expectedProgress, movingGameObject.getMovementProgress());
+        assertEquals(expectedDestinationCoordinates, movingGameObject.getDestinationGridCoordinates());
     }
 
     private static Stream<Arguments> moveFromInitialPosition() {
-        var progressCalculator = new ProgressCalculator();
+        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
+        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
+        float deltaTime = 0.15f;
 
         return Stream.of(
-                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager), Direction.NONE, 0.2f, 0f, 1.0f, null),
-                arguments(new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager), Direction.RIGHT, 0.2f, 0f, 0.5f, new GridPoint2(1, 0)),
-                arguments(new Player(new GridPoint2(1, 2), 5, 5, progressCalculator, colliderManager), Direction.RIGHT, 0.2f, 0f, 1.0f, null)
+                arguments(level.getPlayer(), Direction.NONE, deltaTime, 0f, 1.0f, null),
+                arguments(level.getPlayer(), Direction.RIGHT, deltaTime, 0f, 0.5f, new GridPoint2(1, 0)),
+                arguments(level.getPlayer(), Direction.DOWN, deltaTime, 0f, 1.0f, null)
         );
     }
 
-    private static Stream<Arguments> moveFromIntermediatePosition() {
-        var progressCalculator = new ProgressCalculator();
-        var player1 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
-        player1.getMovingGameObject().move(Direction.UP, 0.2f);
-        var player2 = new Player(new GridPoint2(0, 0), 5, 5, progressCalculator, colliderManager);
-        player2.getMovingGameObject().move(Direction.UP, 0.2f);
+    private static Stream<Arguments> moveFromIntermediatePositionDirectionNone() {
+        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
+        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
+        float deltaTime = 0.15f;
+
+        var player = level.getPlayer();
+        player.getMovingGameObject().move(Direction.UP, 0.2f);
 
         return Stream.of(
-                arguments(player1, Direction.NONE, 0.2f, 90f, 1f, null),
-                arguments(player2, Direction.RIGHT, 0.1f, 90f, 0.75f, new GridPoint2(0, 1))
+                arguments(level.getPlayer(), Direction.NONE, deltaTime, 90f, 1f, null)
+        );
+    }
+
+    private static Stream<Arguments> moveFromIntermediatePositionDirectionRight() {
+        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
+        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
+        float deltaTime = 0.15f;
+
+        var player = level.getPlayer();
+        player.getMovingGameObject().move(Direction.UP, deltaTime);
+
+        return Stream.of(
+                arguments(player, Direction.RIGHT, deltaTime / 2, 90f, 0.75f, new GridPoint2(0, 1))
         );
     }
 }

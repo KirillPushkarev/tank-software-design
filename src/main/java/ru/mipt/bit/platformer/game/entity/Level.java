@@ -21,6 +21,7 @@ public class Level {
 
     private final int levelWidth;
     private final int levelHeight;
+    private final ColliderManager colliderManager = new ColliderManager(this);
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private Player player;
     private final List<GameObject> obstacles = new ArrayList<>();
@@ -49,12 +50,11 @@ public class Level {
     public Level(int[][] grid, int levelWidth, int levelHeight) {
         this.levelWidth = levelWidth;
         this.levelHeight = levelHeight;
-        ColliderManager colliderManager = new ColliderManager(this);
 
-        generateObjectsFromGrid(grid, colliderManager);
+        generateObjectsFromGrid(grid);
     }
 
-    private void generateObjectsFromGrid(int[][] grid, ColliderManager colliderManager) {
+    private void generateObjectsFromGrid(int[][] grid) {
         for (int i = 0; i < levelHeight; i++) {
             for (int j = 0; j < levelWidth; j++) {
                 int x = j;
@@ -65,11 +65,11 @@ public class Level {
                 }
 
                 if (grid[i][j] == TANK_MARKER) {
-                    addTank(colliderManager, x, y);
+                    addTank(x, y);
                 }
 
                 if (grid[i][j] == PLAYER_MARKER) {
-                    addPlayer(colliderManager, x, y);
+                    addPlayer(x, y);
                 }
             }
         }
@@ -81,13 +81,13 @@ public class Level {
         obstacles.add(obstacle);
     }
 
-    private void addTank(ColliderManager colliderManager, int x, int y) {
+    private void addTank(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
         var tank = new Tank(coordinates, TANK_WIDTH, TANK_HEIGHT, progressCalculator, colliderManager);
         tanks.add(tank);
     }
 
-    private void addPlayer(ColliderManager colliderManager, int x, int y) {
+    public void addPlayer(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
         this.player = new Player(coordinates, TANK_WIDTH, TANK_HEIGHT, progressCalculator, colliderManager);
     }
