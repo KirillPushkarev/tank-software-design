@@ -18,9 +18,9 @@ import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.Player;
 import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.executor.CommonActionExecutor;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.AIDirectionStrategyAdapter;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.DirectionStrategy;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.PlayerDirectionStrategy;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.AIActionGenerator;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.ActionGenerator;
+import ru.mipt.bit.platformer.game.executor.direction_strategy.PlayerActionGenerator;
 import ru.mipt.bit.platformer.game.input.InputToDirectionMapper;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.game.renderer.factory.GameRendererFactory;
@@ -46,7 +46,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private final InputToDirectionMapper inputToDirectionMapper = new InputToDirectionMapper();
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
-    private final DirectionStrategy playerDirectionStrategy = new PlayerDirectionStrategy(inputToDirectionMapper);
+    private final ActionGenerator playerDirectionStrategy = new PlayerActionGenerator(inputToDirectionMapper);
     private CommonActionExecutor playerCommandExecutor;
     private CommonActionExecutor botCommandExecutor;
     private Renderer gameRenderer;
@@ -69,7 +69,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         tanks = level.getTanks();
 
         playerCommandExecutor = new CommonActionExecutor(playerDirectionStrategy);
-        DirectionStrategy aiBotDirectionStrategy = new AIDirectionStrategyAdapter(new NotRecommendingAI(), level);
+        ActionGenerator aiBotDirectionStrategy = new AIActionGenerator(new NotRecommendingAI(), level);
         botCommandExecutor = new CommonActionExecutor(aiBotDirectionStrategy);
 
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
@@ -80,9 +80,9 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        playerCommandExecutor.executeCommands(player.getMovingGameObject(), deltaTime);
+        playerCommandExecutor.executeFor(player.getMovingGameObject(), deltaTime);
         for (Tank tank : tanks) {
-            botCommandExecutor.executeCommands(tank.getMovingGameObject(), deltaTime);
+            botCommandExecutor.executeFor(tank.getMovingGameObject(), deltaTime);
         }
 
         gameRenderer.render();
