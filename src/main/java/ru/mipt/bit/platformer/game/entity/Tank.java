@@ -23,6 +23,7 @@ public class Tank extends GameObject {
     protected float movementProgress = MOVEMENT_PROGRESS_END;
     private float timeSinceLastShoot = 0f;
     private int lives = INITIAL_LIVES;
+    private DamageState damageState = new NoDamageState();
 
     public Tank(GridPoint2 initialCoordinates,
                 int width,
@@ -89,6 +90,8 @@ public class Tank extends GameObject {
         if (lives <= 0) {
             level.unregisterTank(this);
         }
+
+        damageState = damageState.getNextState();
     }
 
     private void updateRotation(Direction direction) {
@@ -105,7 +108,7 @@ public class Tank extends GameObject {
 
     private void updatePosition(float deltaTime) {
         if (isMoving()) {
-            movementProgress = progressCalculator.continueProgress(movementProgress, deltaTime, timeOfPassingOneTile);
+            movementProgress = progressCalculator.continueProgress(movementProgress, deltaTime, timeOfPassingOneTile * damageState.getMoveSpeedMultiplier());
 
             if (isEqual(movementProgress, MOVEMENT_PROGRESS_END)) {
                 finishMovement();
