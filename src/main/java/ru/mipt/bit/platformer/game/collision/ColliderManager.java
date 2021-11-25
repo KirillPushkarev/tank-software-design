@@ -30,7 +30,7 @@ public class ColliderManager {
 
     private boolean isObstacle(GridPoint2 position) {
         return level.getObstacles().stream().anyMatch(obstacle -> obstacle.holdsPosition(position)) ||
-                level.getTanks().stream().anyMatch(tank -> tank.getMovingGameObject().holdsPosition(position)) ||
-                level.getPlayer().getMovingGameObject().holdsPosition(position);
+                level.getTanks().stream().anyMatch(tank -> tank.holdsPosition(position)) ||
+                level.getPlayer().holdsPosition(position);
     }
 }

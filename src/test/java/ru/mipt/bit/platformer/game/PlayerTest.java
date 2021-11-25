@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.MovingGameObject;
-import ru.mipt.bit.platformer.game.entity.Player;
 import ru.mipt.bit.platformer.game.level_generator.LevelGenerator;
 import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
 
@@ -31,13 +30,12 @@ class PlayerTest {
 
     @ParameterizedTest
     @MethodSource({"liveTimePeriodInitialPositionData", "liveTimePeriodIntermediatePositionData"})
-    void liveTimePeriod(Player player, float deltaTime, float expectedProgress, GridPoint2 expectedCoordinates, GridPoint2 expectedDestinationCoordinates) {
-        MovingGameObject movingGameObject = player.getMovingGameObject();
-        movingGameObject.liveTimePeriod(deltaTime);
+    void liveTimePeriod(MovingGameObject player, float deltaTime, float expectedProgress, GridPoint2 expectedCoordinates, GridPoint2 expectedDestinationCoordinates) {
+        player.liveTimePeriod(deltaTime);
 
-        assertEquals(expectedProgress, movingGameObject.getMovementProgress());
-        assertEquals(expectedCoordinates, movingGameObject.getCoordinates());
-        assertEquals(expectedDestinationCoordinates, movingGameObject.getDestinationCoordinates());
+        assertEquals(expectedProgress, player.getMovementProgress());
+        assertEquals(expectedCoordinates, player.getCoordinates());
+        assertEquals(expectedDestinationCoordinates, player.getDestinationCoordinates());
     }
 
     private static Stream<Arguments> liveTimePeriodInitialPositionData() {
@@ -45,7 +43,7 @@ class PlayerTest {
         level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
 
         var player = level.getPlayer();
-        player.getMovingGameObject().move(Direction.RIGHT);
+        player.move(Direction.RIGHT);
 
         return Stream.of(
                 arguments(level.getPlayer(), 0.15f, 0.5f, playerInitialCoordinates, new GridPoint2(1, 0))
@@ -57,8 +55,8 @@ class PlayerTest {
         level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
 
         var player = level.getPlayer();
-        player.getMovingGameObject().move(Direction.UP);
-        player.getMovingGameObject().liveTimePeriod(0.15f);
+        player.move(Direction.UP);
+        player.liveTimePeriod(0.15f);
 
         return Stream.of(
                 arguments(player, 0.075f, 0.75f, playerInitialCoordinates, new GridPoint2(0, 1))

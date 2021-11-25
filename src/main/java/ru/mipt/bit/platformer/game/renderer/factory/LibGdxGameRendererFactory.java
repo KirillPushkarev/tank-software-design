@@ -9,14 +9,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import ru.mipt.bit.platformer.game.CoordinatesCalculator;
 import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.renderer.LibGdxGameObjectRenderer;
 import ru.mipt.bit.platformer.game.renderer.LibGdxGameRenderer;
 import ru.mipt.bit.platformer.game.renderer.LibGdxMovingGameObjectRenderer;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.util.MapUtils;
-
-import java.util.stream.Collectors;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 
@@ -31,10 +28,8 @@ public class LibGdxGameRendererFactory implements GameRendererFactory {
         MapRenderer levelRenderer = createSingleLayerMapRenderer(levelTiledMap, batch);
         TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        var movingGameObjects = level.getTanks().stream()
-                .map(Tank::getMovingGameObject)
-                .collect(Collectors.toList());
-        movingGameObjects.add(level.getPlayer().getMovingGameObject());
+        var movingGameObjects = level.getTanks();
+        movingGameObjects.add(level.getPlayer());
         Renderer tankRenderer = new LibGdxMovingGameObjectRenderer(
                 groundLayer,
                 movingGameObjects,

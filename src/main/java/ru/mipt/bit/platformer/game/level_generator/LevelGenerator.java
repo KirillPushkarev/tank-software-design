@@ -3,10 +3,7 @@ package ru.mipt.bit.platformer.game.level_generator;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
-import ru.mipt.bit.platformer.game.entity.GameObject;
-import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.entity.Player;
-import ru.mipt.bit.platformer.game.entity.Tank;
+import ru.mipt.bit.platformer.game.entity.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,9 +18,9 @@ public abstract class LevelGenerator {
     private final ColliderManager colliderManager = new ColliderManager();
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
     protected Level level;
-    private Player player;
+    private MovingGameObject player;
     private final List<GameObject> obstacles = new ArrayList<>();
-    private final List<Tank> tanks = new ArrayList<>();
+    private final List<MovingGameObject> tanks = new ArrayList<>();
 
     public Level generateLevel(int levelWidth, int levelHeight) throws IOException {
         var levelLayout = generateLevelLayout(levelWidth, levelHeight);
@@ -65,12 +62,12 @@ public abstract class LevelGenerator {
 
     private void addTank(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        var tank = new Tank(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, progressCalculator, colliderManager);
+        var tank = new MovingGameObject(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.TANK_TIME_OF_PASSING_ONE_TILE, progressCalculator, colliderManager);
         tanks.add(tank);
     }
 
     public void addPlayer(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        this.player = new Player(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, progressCalculator, colliderManager);
+        this.player = new MovingGameObject(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.PLAYER_TIME_OF_PASSING_ONE_TILE, progressCalculator, colliderManager);
     }
 }

@@ -14,13 +14,12 @@ import com.badlogic.gdx.math.Interpolation;
 import org.awesome.ai.strategy.NotRecommendingAI;
 import ru.mipt.bit.platformer.game.CoordinatesCalculator;
 import ru.mipt.bit.platformer.game.LevelLoader;
-import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.entity.Player;
-import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.command.CommandExecutor;
 import ru.mipt.bit.platformer.game.command.action_generator.AIActionGenerator;
 import ru.mipt.bit.platformer.game.command.action_generator.ActionGenerator;
 import ru.mipt.bit.platformer.game.command.action_generator.PlayerActionGenerator;
+import ru.mipt.bit.platformer.game.entity.Level;
+import ru.mipt.bit.platformer.game.entity.MovingGameObject;
 import ru.mipt.bit.platformer.game.input.InputToDirectionMapper;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.game.renderer.factory.GameRendererFactory;
@@ -42,8 +41,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private TiledMap levelTiledMap;
     private Level level;
-    private Player player;
-    private List<Tank> tanks;
+    private MovingGameObject player;
+    private List<MovingGameObject> tanks;
 
     private final InputToDirectionMapper inputToDirectionMapper = new InputToDirectionMapper();
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
@@ -86,9 +85,9 @@ public class GameDesktopLauncher implements ApplicationListener {
     }
 
     private void executeCommands() {
-        playerCommandExecutor.executeFor(player.getMovingGameObject());
-        for (Tank tank : tanks) {
-            botCommandExecutor.executeFor(tank.getMovingGameObject());
+        playerCommandExecutor.executeFor(player);
+        for (MovingGameObject tank : tanks) {
+            botCommandExecutor.executeFor(tank);
         }
     }
 

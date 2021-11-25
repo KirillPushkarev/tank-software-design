@@ -66,35 +66,33 @@ public class AIActionGenerator implements ActionGenerator {
                 .collect(Collectors.toList());
     }
 
-    private List<Bot> getBots(List<Tank> tanks) {
+    private List<Bot> getBots(List<MovingGameObject> tanks) {
         return tanks.stream()
                 .map(this::getBotFromTank)
                 .collect(Collectors.toList());
     }
 
-    private Bot getBotFromTank(Tank tank) {
-        var movingGameObject = tank.getMovingGameObject();
-        var coordinates = movingGameObject.getCoordinates();
-        var destCoordinates = movingGameObject.getCoordinates();
+    private Bot getBotFromTank(MovingGameObject tank) {
+        var coordinates = tank.getCoordinates();
+        var destCoordinates = tank.getCoordinates();
 
         return new Bot.BotBuilder()
-                .source(movingGameObject)
+                .source(tank)
                 .x(coordinates.x)
                 .y(coordinates.y)
                 .destX(destCoordinates.x)
                 .destY(destCoordinates.y)
-                .orientation(mapDirectionToOrientation(movingGameObject.getLastDirection()))
+                .orientation(mapDirectionToOrientation(tank.getLastDirection()))
                 .build();
     }
 
-    private org.awesome.ai.state.movable.Player getPlayer(Player player) {
-        var movingGameObject = player.getMovingGameObject();
-        var coordinates = movingGameObject.getCoordinates();
-        var destCoordinates = movingGameObject.getCoordinates();
-        Orientation orientation = mapDirectionToOrientation(movingGameObject.getLastDirection());
+    private org.awesome.ai.state.movable.Player getPlayer(MovingGameObject player) {
+        var coordinates = player.getCoordinates();
+        var destCoordinates = player.getCoordinates();
+        Orientation orientation = mapDirectionToOrientation(player.getLastDirection());
 
         return new org.awesome.ai.state.movable.Player.PlayerBuilder()
-                .source(movingGameObject)
+                .source(player)
                 .x(coordinates.x)
                 .y(coordinates.y)
                 .destX(destCoordinates.x)
