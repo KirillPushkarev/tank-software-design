@@ -11,12 +11,14 @@ public class LibGdxGameRenderer implements Renderer {
     private final Batch batch;
     private final Renderer tankRenderer;
     private final Renderer treeRenderer;
+    private final Renderer bulletRenderer;
 
-    public LibGdxGameRenderer(MapRenderer levelRenderer, Batch batch, Renderer tankRenderer, Renderer treeRenderer) {
+    public LibGdxGameRenderer(MapRenderer levelRenderer, Batch batch, Renderer tankRenderer, Renderer treeRenderer, Renderer bulletRenderer) {
         this.mapRenderer = levelRenderer;
         this.batch = batch;
         this.tankRenderer = tankRenderer;
         this.treeRenderer = treeRenderer;
+        this.bulletRenderer = bulletRenderer;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class LibGdxGameRenderer implements Renderer {
 
         tankRenderer.render();
         treeRenderer.render();
+        bulletRenderer.render();
 
         // submit all drawing requests
         batch.end();

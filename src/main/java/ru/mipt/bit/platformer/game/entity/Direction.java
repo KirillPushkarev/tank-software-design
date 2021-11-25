@@ -20,7 +20,7 @@ public enum Direction {
     UP {
         @Override
         public float getRotation() {
-            return 90f;
+            return 0f;
         }
 
         @Override
@@ -31,7 +31,7 @@ public enum Direction {
     DOWN {
         @Override
         public float getRotation() {
-            return -90f;
+            return -180f;
         }
 
         @Override
@@ -42,7 +42,7 @@ public enum Direction {
     LEFT {
         @Override
         public float getRotation() {
-            return -180f;
+            return 90f;
         }
 
         @Override
@@ -53,7 +53,7 @@ public enum Direction {
     RIGHT {
         @Override
         public float getRotation() {
-            return 0f;
+            return -90f;
         }
 
         @Override

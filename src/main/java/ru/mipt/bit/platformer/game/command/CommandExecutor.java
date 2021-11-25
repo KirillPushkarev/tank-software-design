@@ -1,7 +1,7 @@
 package ru.mipt.bit.platformer.game.command;
 
 import ru.mipt.bit.platformer.game.entity.Action;
-import ru.mipt.bit.platformer.game.entity.CommandType;
+import ru.mipt.bit.platformer.game.entity.ActionType;
 import ru.mipt.bit.platformer.game.entity.GameObject;
 import ru.mipt.bit.platformer.game.command.action_generator.ActionGenerator;
 
@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class CommandExecutor {
     private final ActionGenerator actionGenerator;
-    private final Map<CommandType, CommandProducer<Action, GameObject>> commandProducerByActionType = Map.of(
-            CommandType.MOVE, this::move,
-            CommandType.SHOOT, this::shoot
+    private final Map<ActionType, CommandProducer<Action, GameObject>> commandProducerByActionType = Map.of(
+            ActionType.MOVE, this::move,
+            ActionType.SHOOT, this::shoot
     );
 
     public CommandExecutor(ActionGenerator actionGenerator) {
@@ -32,11 +32,11 @@ public class CommandExecutor {
         }
     }
 
-    private MoveCommand move(Action action, GameObject gameObject) {
+    private Command move(Action action, GameObject gameObject) {
         return new MoveCommand(gameObject, action.getDirection());
     }
 
-    private EmptyCommand shoot(Action action, GameObject gameObject) {
-        return new EmptyCommand();
+    private Command shoot(Action action, GameObject gameObject) {
+        return new ShootCommand(gameObject);
     }
 }

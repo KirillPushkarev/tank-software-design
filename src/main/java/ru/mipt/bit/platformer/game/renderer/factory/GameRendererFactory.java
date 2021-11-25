@@ -7,5 +7,5 @@ import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 
 public interface GameRendererFactory {
-    Renderer createGameRenderer(TiledMap levelTiledMap, Level level, CoordinatesCalculator coordinatesCalculator, Texture playerTexture, Texture treeTexture);
+    Renderer createGameRenderer(TiledMap levelTiledMap, Level level, CoordinatesCalculator coordinatesCalculator, Texture playerTexture, Texture treeTexture, Texture bulletTexture);
 }

@@ -3,30 +3,40 @@ package ru.mipt.bit.platformer.game.entity;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
+import ru.mipt.bit.platformer.game.entity.factory.BulletFactory;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
-public class MovingGameObject extends GameObject {
+public class Tank extends GameObject {
     public static final float MOVEMENT_PROGRESS_START = 0f;
     public static final float MOVEMENT_PROGRESS_END = 1f;
+    private static final float MIN_SHOOT_INTERVAL = 1.0f;
+    private static final int INITIAL_LIVES = 3;
     protected final float timeOfPassingOneTile;
 
     protected final ProgressCalculator progressCalculator;
     protected final ColliderManager colliderManager;
+    private final BulletFactory bulletFactory;
+    private final Level level;
     protected GridPoint2 destinationCoordinates = null;
-    protected Direction lastDirection = Direction.NONE;
+    protected Direction lastDirection = Direction.UP;
     protected float movementProgress = MOVEMENT_PROGRESS_END;
+    private float timeSinceLastShoot = 0f;
+    private int lives = INITIAL_LIVES;
 
-    public MovingGameObject(GridPoint2 initialCoordinates,
-                            int width,
-                            int height,
-                            float timeOfPassingOneTile,
-                            ProgressCalculator progressCalculator,
-                            ColliderManager colliderManager) {
+    public Tank(GridPoint2 initialCoordinates,
+                int width,
+                int height,
+                float timeOfPassingOneTile,
+                ProgressCalculator progressCalculator,
+                BulletFactory bulletFactory,
+                Level level) {
         super(initialCoordinates, width, height);
         this.timeOfPassingOneTile = timeOfPassingOneTile;
         this.progressCalculator = progressCalculator;
-        this.colliderManager = colliderManager;
+        this.colliderManager = level.getColliderManager();
+        this.bulletFactory = bulletFactory;
+        this.level = level;
     }
 
     public GridPoint2 getDestinationCoordinates() {
@@ -55,13 +65,30 @@ public class MovingGameObject extends GameObject {
     @Override
     public void move(Direction direction) {
         updateRotation(direction);
-        if (!isMoving() && direction != Direction.NONE && !colliderManager.hasCollisionInDirection(coordinates, this.lastDirection)) {
+        if (!isMoving() && direction != Direction.NONE && colliderManager.canMoveInDirection(coordinates, this.lastDirection)) {
             startMovement();
+        }
+    }
+
+    @Override
+    public void shoot() {
+        if (timeSinceLastShoot > MIN_SHOOT_INTERVAL && colliderManager.canMoveInDirection(coordinates, this.lastDirection)) {
+            var bullet = bulletFactory.createBullet(coordinates, lastDirection);
+            level.registerBullet(bullet);
+            timeSinceLastShoot = 0;
         }
     }
 
     public void liveTimePeriod(float deltaTime) {
         updatePosition(deltaTime);
+        timeSinceLastShoot += deltaTime;
+    }
+
+    public void applyDamage(int damage) {
+        lives -= damage;
+        if (lives <= 0) {
+            level.unregisterTank(this);
+        }
     }
 
     private void updateRotation(Direction direction) {

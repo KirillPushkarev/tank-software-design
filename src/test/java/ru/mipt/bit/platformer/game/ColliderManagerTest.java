@@ -24,9 +24,9 @@ class ColliderManagerTest {
         colliderManager.setLevel(level);
         GridPoint2 objectCoordinates = new GridPoint2(1, 1);
 
-        assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.LEFT));
-        assertFalse(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.RIGHT));
-        assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.UP));
-        assertFalse(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.DOWN));
+        assertTrue(colliderManager.canMoveInDirection(objectCoordinates, Direction.LEFT));
+        assertFalse(colliderManager.canMoveInDirection(objectCoordinates, Direction.RIGHT));
+        assertTrue(colliderManager.canMoveInDirection(objectCoordinates, Direction.UP));
+        assertFalse(colliderManager.canMoveInDirection(objectCoordinates, Direction.DOWN));
     }
 }

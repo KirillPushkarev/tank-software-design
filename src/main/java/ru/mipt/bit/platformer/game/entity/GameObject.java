@@ -48,4 +48,7 @@ public class GameObject {
 
     public void liveTimePeriod(float deltaTime) {
     }
+
+    public void shoot() {
+    }
 }

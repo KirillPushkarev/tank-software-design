@@ -57,7 +57,7 @@ public class AIActionGenerator implements ActionGenerator {
         return builder.build();
     }
 
-    private List<Obstacle> getObstacles(List<GameObject> obstacles) {
+    private List<Obstacle> getObstacles(List<ru.mipt.bit.platformer.game.entity.Obstacle> obstacles) {
         return obstacles.stream()
                 .map(ob -> {
                     GridPoint2 coordinates = ob.getCoordinates();
@@ -66,13 +66,13 @@ public class AIActionGenerator implements ActionGenerator {
                 .collect(Collectors.toList());
     }
 
-    private List<Bot> getBots(List<MovingGameObject> tanks) {
+    private List<Bot> getBots(List<Tank> tanks) {
         return tanks.stream()
                 .map(this::getBotFromTank)
                 .collect(Collectors.toList());
     }
 
-    private Bot getBotFromTank(MovingGameObject tank) {
+    private Bot getBotFromTank(Tank tank) {
         var coordinates = tank.getCoordinates();
         var destCoordinates = tank.getCoordinates();
 
@@ -86,7 +86,7 @@ public class AIActionGenerator implements ActionGenerator {
                 .build();
     }
 
-    private org.awesome.ai.state.movable.Player getPlayer(MovingGameObject player) {
+    private org.awesome.ai.state.movable.Player getPlayer(Tank player) {
         var coordinates = player.getCoordinates();
         var destCoordinates = player.getCoordinates();
         Orientation orientation = mapDirectionToOrientation(player.getLastDirection());
@@ -117,13 +117,13 @@ public class AIActionGenerator implements ActionGenerator {
     private Action mapAction(org.awesome.ai.Action action) {
         switch (action) {
             case MoveNorth:
-                return new Action(CommandType.MOVE, Direction.UP);
+                return new Action(ActionType.MOVE, Direction.UP);
             case MoveEast:
-                return new Action(CommandType.MOVE, Direction.LEFT);
+                return new Action(ActionType.MOVE, Direction.LEFT);
             case MoveWest:
-                return new Action(CommandType.MOVE, Direction.RIGHT);
+                return new Action(ActionType.MOVE, Direction.RIGHT);
             case MoveSouth:
-                return new Action(CommandType.MOVE, Direction.DOWN);
+                return new Action(ActionType.MOVE, Direction.DOWN);
             default:
                 return null;
         }

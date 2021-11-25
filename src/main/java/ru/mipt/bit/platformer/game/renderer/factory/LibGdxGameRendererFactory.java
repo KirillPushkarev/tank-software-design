@@ -9,10 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import ru.mipt.bit.platformer.game.CoordinatesCalculator;
 import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.renderer.LibGdxGameObjectRenderer;
-import ru.mipt.bit.platformer.game.renderer.LibGdxGameRenderer;
-import ru.mipt.bit.platformer.game.renderer.LibGdxMovingGameObjectRenderer;
-import ru.mipt.bit.platformer.game.renderer.Renderer;
+import ru.mipt.bit.platformer.game.renderer.*;
 import ru.mipt.bit.platformer.util.MapUtils;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
@@ -22,27 +19,33 @@ public class LibGdxGameRendererFactory implements GameRendererFactory {
                                        Level level,
                                        CoordinatesCalculator coordinatesCalculator,
                                        Texture tankTexture,
-                                       Texture treeTexture) {
+                                       Texture treeTexture,
+                                       Texture bulletTexture) {
         Batch batch = new SpriteBatch();
 
         MapRenderer levelRenderer = createSingleLayerMapRenderer(levelTiledMap, batch);
         TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        var movingGameObjects = level.getTanks();
-        movingGameObjects.add(level.getPlayer());
-        Renderer tankRenderer = new LibGdxMovingGameObjectRenderer(
+        LibGdxTankRenderer tankRenderer = new LibGdxTankRenderer(
                 groundLayer,
-                movingGameObjects,
                 new TextureRegion(tankTexture),
                 batch,
                 coordinatesCalculator
         );
-        Renderer treeRenderer = new LibGdxGameObjectRenderer(groundLayer,
-                level.getObstacles(),
+        level.addSubscriber(tankRenderer);
+        LibGdxObstacleRenderer treeRenderer = new LibGdxObstacleRenderer(
+                groundLayer,
                 new TextureRegion(treeTexture),
                 batch,
                 coordinatesCalculator);
+        level.addSubscriber(treeRenderer);
+        LibGdxBulletRenderer bulletRenderer = new LibGdxBulletRenderer(
+                groundLayer,
+                new TextureRegion(bulletTexture),
+                batch,
+                coordinatesCalculator);
+        level.addSubscriber(bulletRenderer);
 
-        return new LibGdxGameRenderer(levelRenderer, batch, tankRenderer, treeRenderer);
+        return new LibGdxGameRenderer(levelRenderer, batch, tankRenderer, treeRenderer, bulletRenderer);
     }
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.entity.MovingGameObject;
+import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.level_generator.LevelGenerator;
 import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
 
@@ -30,7 +30,7 @@ class PlayerTest {
 
     @ParameterizedTest
     @MethodSource({"liveTimePeriodInitialPositionData", "liveTimePeriodIntermediatePositionData"})
-    void liveTimePeriod(MovingGameObject player, float deltaTime, float expectedProgress, GridPoint2 expectedCoordinates, GridPoint2 expectedDestinationCoordinates) {
+    void liveTimePeriod(Tank player, float deltaTime, float expectedProgress, GridPoint2 expectedCoordinates, GridPoint2 expectedDestinationCoordinates) {
         player.liveTimePeriod(deltaTime);
 
         assertEquals(expectedProgress, player.getMovementProgress());
@@ -40,7 +40,7 @@ class PlayerTest {
 
     private static Stream<Arguments> liveTimePeriodInitialPositionData() {
         GridPoint2 playerInitialCoordinates = new GridPoint2(0, 0);
-        level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
+        level.addPlayer(playerInitialCoordinates.x, playerInitialCoordinates.y);
 
         var player = level.getPlayer();
         player.move(Direction.RIGHT);
@@ -52,7 +52,7 @@ class PlayerTest {
 
     private static Stream<Arguments> liveTimePeriodIntermediatePositionData() {
         GridPoint2 playerInitialCoordinates = new GridPoint2(0, 0);
-        level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
+        level.addPlayer(playerInitialCoordinates.x, playerInitialCoordinates.y);
 
         var player = level.getPlayer();
         player.move(Direction.UP);
