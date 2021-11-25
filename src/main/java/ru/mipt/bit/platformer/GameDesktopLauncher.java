@@ -17,10 +17,10 @@ import ru.mipt.bit.platformer.game.LevelLoader;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.Player;
 import ru.mipt.bit.platformer.game.entity.Tank;
-import ru.mipt.bit.platformer.game.executor.CommonActionExecutor;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.AIActionGenerator;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.ActionGenerator;
-import ru.mipt.bit.platformer.game.executor.direction_strategy.PlayerActionGenerator;
+import ru.mipt.bit.platformer.game.command.CommandExecutor;
+import ru.mipt.bit.platformer.game.command.action_generator.AIActionGenerator;
+import ru.mipt.bit.platformer.game.command.action_generator.ActionGenerator;
+import ru.mipt.bit.platformer.game.command.action_generator.PlayerActionGenerator;
 import ru.mipt.bit.platformer.game.input.InputToDirectionMapper;
 import ru.mipt.bit.platformer.game.renderer.Renderer;
 import ru.mipt.bit.platformer.game.renderer.factory.GameRendererFactory;
@@ -41,14 +41,15 @@ public class GameDesktopLauncher implements ApplicationListener {
     private final LevelLoader levelLoader = new LevelLoader();
 
     private TiledMap levelTiledMap;
+    private Level level;
     private Player player;
     private List<Tank> tanks;
 
     private final InputToDirectionMapper inputToDirectionMapper = new InputToDirectionMapper();
     private final GameRendererFactory gameRendererFactory = new LibGdxGameRendererFactory();
     private final ActionGenerator playerActionGenerator = new PlayerActionGenerator(inputToDirectionMapper);
-    private CommonActionExecutor playerCommandExecutor;
-    private CommonActionExecutor botCommandExecutor;
+    private CommandExecutor playerCommandExecutor;
+    private CommandExecutor botCommandExecutor;
     private Renderer gameRenderer;
     private Batch batch;
     private Texture blueTankTexture;
@@ -64,13 +65,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         levelTiledMap = new TmxMapLoader().load(LEVEL_TILE_MAP);
         TiledMapTileLayer groundLayer = MapUtils.getSingleLayer(levelTiledMap);
 
-        Level level = levelLoader.getLevel();
+        level = levelLoader.getLevel();
         player = level.getPlayer();
         tanks = level.getTanks();
 
-        playerCommandExecutor = new CommonActionExecutor(playerActionGenerator);
+        playerCommandExecutor = new CommandExecutor(playerActionGenerator);
         ActionGenerator botActionGenerator = new AIActionGenerator(new NotRecommendingAI(), level);
-        botCommandExecutor = new CommonActionExecutor(botActionGenerator);
+        botCommandExecutor = new CommandExecutor(botActionGenerator);
 
         CoordinatesCalculator coordinatesCalculator = new CoordinatesCalculator(groundLayer, Interpolation.smooth);
         gameRenderer = gameRendererFactory.createGameRenderer(levelTiledMap, level, coordinatesCalculator, blueTankTexture, greenTreeTexture);
@@ -79,13 +80,16 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-
-        playerCommandExecutor.executeFor(player.getMovingGameObject(), deltaTime);
-        for (Tank tank : tanks) {
-            botCommandExecutor.executeFor(tank.getMovingGameObject(), deltaTime);
-        }
-
+        executeCommands();
+        level.liveTimePeriod(deltaTime);
         gameRenderer.render();
+    }
+
+    private void executeCommands() {
+        playerCommandExecutor.executeFor(player.getMovingGameObject());
+        for (Tank tank : tanks) {
+            botCommandExecutor.executeFor(tank.getMovingGameObject());
+        }
     }
 
     @Override

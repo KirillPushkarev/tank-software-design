@@ -59,7 +59,7 @@ public abstract class LevelGenerator {
 
     private void addObstacle(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        var obstacle = new GameObject(coordinates, Level.TREE_WIDTH, Level.OBSTACLE_HEIGHT);
+        var obstacle = new GameObject(coordinates, Level.TREE_WIDTH, Level.TREE_HEIGHT);
         obstacles.add(obstacle);
     }
 

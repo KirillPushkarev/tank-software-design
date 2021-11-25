@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.game.executor.direction_strategy;
+package ru.mipt.bit.platformer.game.command.action_generator;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.awesome.ai.AI;
@@ -23,7 +23,7 @@ public class AIActionGenerator implements ActionGenerator {
     }
 
     @Override
-    public List<Action> getActions(GameObject gameObject, float deltaTime) {
+    public List<Action> getActions(GameObject gameObject) {
         List<Action> actions = new ArrayList<>();
 
         List<Recommendation> recommendations = ai.recommend(getGameState());
@@ -60,7 +60,7 @@ public class AIActionGenerator implements ActionGenerator {
     private List<Obstacle> getObstacles(List<GameObject> obstacles) {
         return obstacles.stream()
                 .map(ob -> {
-                    GridPoint2 coordinates = ob.getGridCoordinates();
+                    GridPoint2 coordinates = ob.getCoordinates();
                     return new Obstacle(coordinates.x, coordinates.y);
                 })
                 .collect(Collectors.toList());
@@ -74,8 +74,8 @@ public class AIActionGenerator implements ActionGenerator {
 
     private Bot getBotFromTank(Tank tank) {
         var movingGameObject = tank.getMovingGameObject();
-        var coordinates = movingGameObject.getGridCoordinates();
-        var destCoordinates = movingGameObject.getGridCoordinates();
+        var coordinates = movingGameObject.getCoordinates();
+        var destCoordinates = movingGameObject.getCoordinates();
 
         return new Bot.BotBuilder()
                 .source(movingGameObject)
@@ -89,8 +89,8 @@ public class AIActionGenerator implements ActionGenerator {
 
     private org.awesome.ai.state.movable.Player getPlayer(Player player) {
         var movingGameObject = player.getMovingGameObject();
-        var coordinates = movingGameObject.getGridCoordinates();
-        var destCoordinates = movingGameObject.getGridCoordinates();
+        var coordinates = movingGameObject.getCoordinates();
+        var destCoordinates = movingGameObject.getCoordinates();
         Orientation orientation = mapDirectionToOrientation(movingGameObject.getLastDirection());
 
         return new org.awesome.ai.state.movable.Player.PlayerBuilder()
@@ -119,13 +119,13 @@ public class AIActionGenerator implements ActionGenerator {
     private Action mapAction(org.awesome.ai.Action action) {
         switch (action) {
             case MoveNorth:
-                return new Action(ActionType.MOVE, Direction.UP);
+                return new Action(CommandType.MOVE, Direction.UP);
             case MoveEast:
-                return new Action(ActionType.MOVE, Direction.LEFT);
+                return new Action(CommandType.MOVE, Direction.LEFT);
             case MoveWest:
-                return new Action(ActionType.MOVE, Direction.RIGHT);
+                return new Action(CommandType.MOVE, Direction.RIGHT);
             case MoveSouth:
-                return new Action(ActionType.MOVE, Direction.DOWN);
+                return new Action(CommandType.MOVE, Direction.DOWN);
             default:
                 return null;
         }

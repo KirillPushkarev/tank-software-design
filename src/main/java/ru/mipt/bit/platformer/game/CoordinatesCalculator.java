@@ -23,7 +23,7 @@ public class CoordinatesCalculator {
 
     public void moveGameObjectBetweenTileCenters(GameObject gameObject, GridPoint2 toTileCoordinates, float progress) {
         Rectangle rectangle = gameObject.getRectangle();
-        moveRectangleAtTileCenter(tileLayer, rectangle, gameObject.getGridCoordinates());
+        moveRectangleAtTileCenter(tileLayer, rectangle, gameObject.getCoordinates());
         float fromTileBottomLeftX = rectangle.x;
         float fromTileBottomLeftY = rectangle.y;
 

@@ -30,51 +30,38 @@ class PlayerTest {
     }
 
     @ParameterizedTest
-    @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePositionDirectionNone", "moveFromIntermediatePositionDirectionRight"})
-    void move(Player player, Direction direction, float deltaTime, float expectedRotation, float expectedProgress, GridPoint2 expectedDestinationCoordinates) {
+    @MethodSource({"liveTimePeriodInitialPositionData", "liveTimePeriodIntermediatePositionData"})
+    void liveTimePeriod(Player player, float deltaTime, float expectedProgress, GridPoint2 expectedCoordinates, GridPoint2 expectedDestinationCoordinates) {
         MovingGameObject movingGameObject = player.getMovingGameObject();
-        movingGameObject.move(direction, deltaTime);
+        movingGameObject.liveTimePeriod(deltaTime);
 
-        assertEquals(expectedRotation, movingGameObject.getRotation());
         assertEquals(expectedProgress, movingGameObject.getMovementProgress());
-        assertEquals(expectedDestinationCoordinates, movingGameObject.getDestinationGridCoordinates());
+        assertEquals(expectedCoordinates, movingGameObject.getCoordinates());
+        assertEquals(expectedDestinationCoordinates, movingGameObject.getDestinationCoordinates());
     }
 
-    private static Stream<Arguments> moveFromInitialPosition() {
-        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
-        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
-        float deltaTime = 0.15f;
+    private static Stream<Arguments> liveTimePeriodInitialPositionData() {
+        GridPoint2 playerInitialCoordinates = new GridPoint2(0, 0);
+        level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
+
+        var player = level.getPlayer();
+        player.getMovingGameObject().move(Direction.RIGHT);
 
         return Stream.of(
-                arguments(level.getPlayer(), Direction.NONE, deltaTime, 0f, 1.0f, null),
-                arguments(level.getPlayer(), Direction.RIGHT, deltaTime, 0f, 0.5f, new GridPoint2(1, 0)),
-                arguments(level.getPlayer(), Direction.DOWN, deltaTime, 0f, 1.0f, null)
+                arguments(level.getPlayer(), 0.15f, 0.5f, playerInitialCoordinates, new GridPoint2(1, 0))
         );
     }
 
-    private static Stream<Arguments> moveFromIntermediatePositionDirectionNone() {
-        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
-        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
-        float deltaTime = 0.15f;
+    private static Stream<Arguments> liveTimePeriodIntermediatePositionData() {
+        GridPoint2 playerInitialCoordinates = new GridPoint2(0, 0);
+        level.setPlayerPosition(playerInitialCoordinates.x, playerInitialCoordinates.y);
 
         var player = level.getPlayer();
-        player.getMovingGameObject().move(Direction.UP, 0.2f);
+        player.getMovingGameObject().move(Direction.UP);
+        player.getMovingGameObject().liveTimePeriod(0.15f);
 
         return Stream.of(
-                arguments(level.getPlayer(), Direction.NONE, deltaTime, 90f, 1f, null)
-        );
-    }
-
-    private static Stream<Arguments> moveFromIntermediatePositionDirectionRight() {
-        GridPoint2 playerCoordinates = new GridPoint2(0, 0);
-        level.addPlayer(playerCoordinates.x, playerCoordinates.y);
-        float deltaTime = 0.15f;
-
-        var player = level.getPlayer();
-        player.getMovingGameObject().move(Direction.UP, deltaTime);
-
-        return Stream.of(
-                arguments(player, Direction.RIGHT, deltaTime / 2, 90f, 0.75f, new GridPoint2(0, 1))
+                arguments(player, 0.075f, 0.75f, playerInitialCoordinates, new GridPoint2(0, 1))
         );
     }
 }

@@ -1,7 +1,7 @@
-package ru.mipt.bit.platformer.game.executor.direction_strategy;
+package ru.mipt.bit.platformer.game.command.action_generator;
 
 import ru.mipt.bit.platformer.game.entity.Action;
-import ru.mipt.bit.platformer.game.entity.ActionType;
+import ru.mipt.bit.platformer.game.entity.CommandType;
 import ru.mipt.bit.platformer.game.entity.GameObject;
 import ru.mipt.bit.platformer.game.input.InputToDirectionMapper;
 
@@ -16,10 +16,10 @@ public class PlayerActionGenerator implements ActionGenerator {
     }
 
     @Override
-    public List<Action> getActions(GameObject gameObject, float deltaTime) {
+    public List<Action> getActions(GameObject gameObject) {
         List<Action> actions = new ArrayList<>();
         var direction = inputToDirectionMapper.getDirection();
-        actions.add(new Action(ActionType.MOVE, direction));
+        actions.add(new Action(CommandType.MOVE, direction));
 
         return actions;
     }

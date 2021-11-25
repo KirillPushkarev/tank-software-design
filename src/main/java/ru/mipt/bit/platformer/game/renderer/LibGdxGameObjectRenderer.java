@@ -23,7 +23,7 @@ public class LibGdxGameObjectRenderer implements Renderer {
         for (GameObject gameObject : gameObjects) {
             coordinatesCalculator.moveRectangleAtTileCenter(groundLayer,
                     gameObject.getRectangle(),
-                    gameObject.getGridCoordinates());
+                    gameObject.getCoordinates());
         }
     }
 

@@ -24,16 +24,16 @@ public class LibGdxMovingGameObjectRenderer implements Renderer {
         this.coordinatesCalculator = coordinatesCalculator;
 
         for (GameObject gameObject : movingGameObjects) {
-            this.coordinatesCalculator.moveRectangleAtTileCenter(groundLayer, gameObject.getRectangle(), gameObject.getGridCoordinates());
+            this.coordinatesCalculator.moveRectangleAtTileCenter(groundLayer, gameObject.getRectangle(), gameObject.getCoordinates());
         }
     }
 
     @Override
     public void render() {
         for (MovingGameObject movingGameObject : movingGameObjects) {
-            if (movingGameObject.getDestinationGridCoordinates() != null) {
+            if (movingGameObject.getDestinationCoordinates() != null) {
                 coordinatesCalculator.moveGameObjectBetweenTileCenters(movingGameObject,
-                        movingGameObject.getDestinationGridCoordinates(),
+                        movingGameObject.getDestinationCoordinates(),
                         movingGameObject.getMovementProgress());
             }
 

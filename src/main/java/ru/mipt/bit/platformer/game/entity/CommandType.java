@@ -1,5 +1,5 @@
 package ru.mipt.bit.platformer.game.entity;
 
-public enum ActionType {
+public enum CommandType {
     MOVE, SHOOT
 }

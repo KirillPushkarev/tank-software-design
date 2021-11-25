@@ -6,17 +6,17 @@ import com.badlogic.gdx.math.Rectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 
 public class GameObject {
-    protected final GridPoint2 gridCoordinates;
+    protected final GridPoint2 coordinates;
     protected float rotation = 0f;
     protected final Rectangle rectangle;
 
     public GameObject(GridPoint2 gridCoordinates, int width, int height) {
-        this.gridCoordinates = gridCoordinates;
+        this.coordinates = gridCoordinates;
         this.rectangle = createBoundingRectangle(width, height);
     }
 
-    public GridPoint2 getGridCoordinates() {
-        return gridCoordinates;
+    public GridPoint2 getCoordinates() {
+        return coordinates;
     }
 
     public float getRotation() {
@@ -32,7 +32,7 @@ public class GameObject {
     }
 
     public boolean holdsPosition(GridPoint2 position) {
-        return gridCoordinates.equals(position);
+        return coordinates.equals(position);
     }
 
     public Direction getLastDirection() {
@@ -43,6 +43,9 @@ public class GameObject {
         return false;
     }
 
-    public void move(Direction direction, float deltaTime) {
+    public void move(Direction direction) {
+    }
+
+    public void liveTimePeriod(float deltaTime) {
     }
 }
