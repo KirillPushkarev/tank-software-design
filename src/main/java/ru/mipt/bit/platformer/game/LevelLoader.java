@@ -13,11 +13,7 @@ public class LevelLoader {
     public Level getLevel() {
         Level level = null;
         try (var inputStream = new BufferedReader(new FileReader(FileUtils.readFileFromResources(GameDesktopLauncher.LEVEL_OBJECT_MAP)))) {
-            level = new Level(
-                    new StreamLevelGenerator(inputStream).generateLevelLayout(GameDesktopLauncher.LEVEL_WIDTH, GameDesktopLauncher.LEVEL_HEIGHT),
-                    GameDesktopLauncher.LEVEL_WIDTH,
-                    GameDesktopLauncher.LEVEL_HEIGHT
-            );
+            level = new StreamLevelGenerator(inputStream).generateLevel(GameDesktopLauncher.LEVEL_WIDTH, GameDesktopLauncher.LEVEL_HEIGHT);
         } catch (IOException e) {
             e.printStackTrace();
         }

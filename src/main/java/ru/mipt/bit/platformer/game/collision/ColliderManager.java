@@ -5,9 +5,12 @@ import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 
 public class ColliderManager {
-    private final Level level;
+    private Level level;
 
-    public ColliderManager(Level level) {
+    public ColliderManager() {
+    }
+
+    public void setLevel(Level level) {
         this.level = level;
     }
 

@@ -5,7 +5,7 @@ import ru.mipt.bit.platformer.game.entity.Level;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class StreamLevelGenerator implements LevelGeneratorInterface {
+public class StreamLevelGenerator extends LevelGenerator {
     private final BufferedReader reader;
 
     public StreamLevelGenerator(BufferedReader reader) {
@@ -13,7 +13,7 @@ public class StreamLevelGenerator implements LevelGeneratorInterface {
     }
 
     @Override
-    public int[][] generateLevelLayout(int gridWidth, int gridHeight) throws IOException {
+    protected int[][] generateLevelLayout(int gridWidth, int gridHeight) throws IOException {
         int[][] grid = new int[gridHeight][gridWidth];
         generateGameObjectPositions(grid);
         return grid;
@@ -28,16 +28,16 @@ public class StreamLevelGenerator implements LevelGeneratorInterface {
 
                 switch (symbol) {
                     case '_':
-                        marker = Level.GRASS_MARKER;
+                        marker = GRASS_MARKER;
                         break;
                     case 'T':
-                        marker = Level.OBSTACLE_MARKER;
+                        marker = OBSTACLE_MARKER;
                         break;
                     case 'X':
-                        marker = Level.TANK_MARKER;
+                        marker = TANK_MARKER;
                         break;
                     case 'P':
-                        marker = Level.PLAYER_MARKER;
+                        marker = PLAYER_MARKER;
                         break;
                     default:
                         throw new IllegalArgumentException("Unsupported level symbol");

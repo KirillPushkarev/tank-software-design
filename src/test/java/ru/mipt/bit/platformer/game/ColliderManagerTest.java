@@ -5,14 +5,23 @@ import org.junit.jupiter.api.Test;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
 import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
+import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ColliderManagerTest {
     @Test
-    void hasCollisionInDirection() {
-        var colliderManager = new ColliderManager(new Level(new int[][] {{1, 1, 1}, {1, 3, 0}, {0, 0, 0}}, 3, 3));
+    void hasCollisionInDirection() throws IOException {
+        var generator = new StreamLevelGenerator(new BufferedReader(new StringReader("TTT\nTP_\n___")));
+        Level level = generator.generateLevel(3, 3);
+
+        var colliderManager = new ColliderManager();
+        colliderManager.setLevel(level);
         GridPoint2 objectCoordinates = new GridPoint2(1, 1);
 
         assertTrue(colliderManager.hasCollisionInDirection(objectCoordinates, Direction.LEFT));

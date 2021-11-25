@@ -1,27 +1,33 @@
 package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.mipt.bit.platformer.game.collision.ColliderManager;
 import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.MovingGameObject;
 import ru.mipt.bit.platformer.game.entity.Player;
+import ru.mipt.bit.platformer.game.level_generator.LevelGenerator;
+import ru.mipt.bit.platformer.game.level_generator.StreamLevelGenerator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class PlayerTest {
-    private static final Level level = new Level(new int[][]{
-            {0, 0, 0},
-            {0, 0, 0},
-            {0, 0, 1}
-    }, 3, 3);
-    private static final ColliderManager colliderManager = new ColliderManager(level);
+    private static Level level;
+
+    @BeforeAll
+    static void setUp() throws IOException {
+        LevelGenerator generator = new StreamLevelGenerator(new BufferedReader(new StringReader("___\n___\n__T")));
+        level = generator.generateLevel(3, 3);
+    }
 
     @ParameterizedTest
     @MethodSource({"moveFromInitialPosition", "moveFromIntermediatePositionDirectionNone", "moveFromIntermediatePositionDirectionRight"})
