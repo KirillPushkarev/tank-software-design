@@ -1,0 +1,30 @@
+1. Write DS
+
+Пользователь
+userId (string)
+nick (string)
+
+Пост
+postId (string)
+text (string)
+timestamp (int)
+
+Лайк
+userId (string)
+postId (string)
+
+Комментарий
+postId (string)
+userId (string)
+text (string)
+timestamp (int)
+
+2. Read DS
+Лента
+userId (string)
+posts (json, отсортированы по дате по убыванию)
+
+Пост с лайками и комментариями
+postId (string)
+likesCount (int)
+comments (json, отсортированы по дате по убыванию)
