@@ -1,0 +1,26 @@
+1. Write DS
+
+Пользователь
+userId (string)
+nick (string)
+
+Пост
+postId (string)
+text (string)
+timestamp (int)
+
+Лайк
+userId (string)
+postId (string)
+
+Комментарий
+postId (string)
+userId (string)
+text (string)
+timestamp (int)
+
+2. Read DS
+
+Лента
+feedOwnerId (string)
+posts (json). Формат: {[{"post_id": "string", "user_id": "string", "text": "string", "images": [{"url": "string"}], "likesCount": "integer"}]}

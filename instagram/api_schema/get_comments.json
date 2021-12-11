@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "query": {
+      "post_id": "1",
+      "offset": 10,
+      "limit": 10
+    }
+  },
+  "response": {
+    "statusCode": 200,
+    "body": {
+      "comments": [
+        {
+          "id": "1",
+          "user_id": "454545",
+          "text": "My comment"
+        },
+        {
+          "id": "2",
+          "user_id": "3453536",
+          "text": "Other comment"
+        }
+      ]
+    }
+  }
+}
