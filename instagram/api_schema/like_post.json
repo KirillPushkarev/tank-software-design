@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "body": {
+      "post_id": "1",
+      "user_id": "5329592539"
+    }
+  },
+  "response": {
+    "statusCode": 201,
+    "body": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "body": {
+      "post_id": "1",
+      "user_id": "36566656",
+      "text": "My comment"
+    }
+  },
+  "response": {
+    "statusCode": 201,
+    "body": null
+  }
+}

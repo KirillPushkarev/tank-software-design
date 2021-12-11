@@ -20,11 +20,7 @@ text (string)
 timestamp (int)
 
 2. Read DS
-Лента
-userId (string)
-posts (json, отсортированы по дате по убыванию)
 
-Пост с лайками и комментариями
-postId (string)
-likesCount (int)
-comments (json, отсортированы по дате по убыванию)
+Лента
+feedOwnerId (string)
+posts (json). Формат: {[{"post_id": "string", "user_id": "string", "text": "string", "images": [{"url": "string"}], "likesCount": "integer"}]}
