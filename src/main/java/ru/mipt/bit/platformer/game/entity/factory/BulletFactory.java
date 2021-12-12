@@ -7,15 +7,15 @@ import ru.mipt.bit.platformer.game.entity.Direction;
 import ru.mipt.bit.platformer.game.entity.Level;
 
 public class BulletFactory {
+    private final ProgressCalculator progressCalculator;
     private Level level;
-    private ProgressCalculator progressCalculator;
+
+    public BulletFactory(ProgressCalculator progressCalculator) {
+        this.progressCalculator = progressCalculator;
+    }
 
     public void setLevel(Level level) {
         this.level = level;
-    }
-
-    public void setProgressCalculator(ProgressCalculator progressCalculator) {
-        this.progressCalculator = progressCalculator;
     }
 
     public Bullet createBullet(GridPoint2 tankCoordinates, Direction tankDirection) {

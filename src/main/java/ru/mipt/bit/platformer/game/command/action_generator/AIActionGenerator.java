@@ -15,18 +15,16 @@ import java.util.stream.Collectors;
 
 public class AIActionGenerator implements ActionGenerator {
     private final AI ai;
-    private final Level level;
 
-    public AIActionGenerator(AI ai, Level level) {
+    public AIActionGenerator(AI ai) {
         this.ai = ai;
-        this.level = level;
     }
 
     @Override
-    public List<Action> getActions(GameObject gameObject) {
+    public List<Action> getActions(Level level, GameObject gameObject) {
         List<Action> actions = new ArrayList<>();
 
-        List<Recommendation> recommendations = ai.recommend(getGameState());
+        List<Recommendation> recommendations = ai.recommend(getGameState(level));
         for (Recommendation recommendation : recommendations) {
             addActionForRecommendation(gameObject, actions, recommendation);
         }
@@ -46,12 +44,12 @@ public class AIActionGenerator implements ActionGenerator {
         }
     }
 
-    private GameState getGameState() {
+    private GameState getGameState(Level level) {
         var builder = new GameState.GameStateBuilder()
                 .levelWidth(level.getLevelWidth())
                 .levelHeight(level.getLevelHeight())
                 .obstacles(getObstacles(level.getObstacles()))
-                .bots(getBots(level.getTanks()))
+                .bots(getBots(level.getBots()))
                 .player(getPlayer(level.getPlayer()));
 
         return builder.build();

@@ -1,9 +1,6 @@
 package ru.mipt.bit.platformer.game.command.action_generator;
 
-import ru.mipt.bit.platformer.game.entity.Action;
-import ru.mipt.bit.platformer.game.entity.ActionType;
-import ru.mipt.bit.platformer.game.entity.Direction;
-import ru.mipt.bit.platformer.game.entity.GameObject;
+import ru.mipt.bit.platformer.game.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +12,7 @@ public class StandardBotActionGenerator implements ActionGenerator {
     private static final double SHOOT_PROBABILITY = 0.2;
 
     @Override
-    public List<Action> getActions(GameObject gameObject) {
+    public List<Action> getActions(Level level, GameObject gameObject) {
         List<Action> actions = new ArrayList<>();
         actions.add(new Action(ActionType.MOVE, getDirection(gameObject)));
         if (shouldShoot()) {

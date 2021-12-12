@@ -1,9 +1,15 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
+import org.awesome.ai.strategy.NotRecommendingAI;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
+import ru.mipt.bit.platformer.game.command.CommandExecutor;
+import ru.mipt.bit.platformer.game.command.action_generator.AIActionGenerator;
+import ru.mipt.bit.platformer.game.command.action_generator.ActionGenerator;
+import ru.mipt.bit.platformer.game.command.action_generator.PlayerActionGenerator;
 import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.entity.factory.BulletFactory;
+import ru.mipt.bit.platformer.game.input.InputToActionMapper;
 
 import java.io.IOException;
 
@@ -15,11 +21,27 @@ public abstract class LevelGenerator {
 
     private final ColliderManager colliderManager = new ColliderManager();
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
-    private final BulletFactory bulletFactory = new BulletFactory();
+    private final BulletFactory bulletFactory = new BulletFactory(progressCalculator);
+    private final CommandExecutor playerCommandExecutor;
+    private final CommandExecutor botCommandExecutor;
     protected Level level;
 
+    public LevelGenerator() {
+        InputToActionMapper inputToActionMapper = new InputToActionMapper();
+        ActionGenerator playerActionGenerator = new PlayerActionGenerator(inputToActionMapper);
+        playerCommandExecutor = new CommandExecutor(playerActionGenerator);
+        ActionGenerator botActionGenerator = new AIActionGenerator(new NotRecommendingAI());
+        botCommandExecutor = new CommandExecutor(botActionGenerator);
+    }
+
     public Level generateLevel(int levelWidth, int levelHeight) throws IOException {
-        level = new Level(levelWidth, levelHeight, colliderManager, progressCalculator, bulletFactory);
+        level = new Level(levelWidth,
+                levelHeight,
+                colliderManager,
+                progressCalculator,
+                bulletFactory,
+                playerCommandExecutor,
+                botCommandExecutor);
         var levelLayout = generateLevelLayout(levelWidth, levelHeight);
         generateObjectsFromGrid(levelLayout, levelWidth, levelHeight);
 

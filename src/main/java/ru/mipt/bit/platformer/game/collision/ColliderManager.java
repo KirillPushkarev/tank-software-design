@@ -29,7 +29,7 @@ public class ColliderManager {
             return obstacle;
         }
 
-        var tank = level.getTanks().stream().filter(t -> t.holdsPosition(position)).findFirst().orElse(null);
+        var tank = level.getBots().stream().filter(t -> t.holdsPosition(position)).findFirst().orElse(null);
         if (tank != null) {
             return tank;
         }

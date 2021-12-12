@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.game.command.action_generator;
 
 import ru.mipt.bit.platformer.game.entity.Action;
 import ru.mipt.bit.platformer.game.entity.GameObject;
+import ru.mipt.bit.platformer.game.entity.Level;
 import ru.mipt.bit.platformer.game.input.InputToActionMapper;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class PlayerActionGenerator implements ActionGenerator {
     }
 
     @Override
-    public List<Action> getActions(GameObject gameObject) {
+    public List<Action> getActions(Level level, GameObject gameObject) {
         List<Action> actions = new ArrayList<>();
         var action = inputToActionMapper.getAction();
         if (action != null) {

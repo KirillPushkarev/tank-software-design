@@ -4,6 +4,7 @@ import ru.mipt.bit.platformer.game.entity.Action;
 import ru.mipt.bit.platformer.game.entity.ActionType;
 import ru.mipt.bit.platformer.game.entity.GameObject;
 import ru.mipt.bit.platformer.game.command.action_generator.ActionGenerator;
+import ru.mipt.bit.platformer.game.entity.Level;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,8 @@ public class CommandExecutor {
         this.actionGenerator = actionGenerator;
     }
 
-    public void executeFor(GameObject gameObject) {
-        List<Action> actions = actionGenerator.getActions(gameObject);
+    public void executeFor(Level level, GameObject gameObject) {
+        List<Action> actions = actionGenerator.getActions(level, gameObject);
         executeCommands(actions, gameObject);
     }
 

@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.game.entity;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
+import ru.mipt.bit.platformer.game.command.CommandExecutor;
 import ru.mipt.bit.platformer.game.common.Event;
 import ru.mipt.bit.platformer.game.common.EventType;
 import ru.mipt.bit.platformer.game.common.Subscriber;
@@ -18,8 +19,8 @@ public class Level {
     public static final int TANK_HEIGHT = 84;
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 10;
-    public static final float TANK_TIME_OF_PASSING_ONE_TILE = 0.4f;
     public static final float PLAYER_TIME_OF_PASSING_ONE_TILE = 0.3f;
+    public static final float BOT_TIME_OF_PASSING_ONE_TILE = 0.4f;
 
     private final int levelWidth;
     private final int levelHeight;
@@ -28,26 +29,31 @@ public class Level {
     private final BulletFactory bulletFactory;
     private Tank player = null;
     private final List<Obstacle> obstacles = new ArrayList<>();
-    private final List<Tank> tanks = new ArrayList<>();
+    private final List<Tank> bots = new ArrayList<>();
     private final List<Bullet> bullets = new ArrayList<>();
-    private final List<Tank> tanksToUnregister = new ArrayList<>();
+    private final List<Tank> botsToUnregister = new ArrayList<>();
     private final List<Bullet> bulletsToUnregister = new ArrayList<>();
     private final List<Subscriber> subscribers = new ArrayList<>();
+    private final CommandExecutor playerCommandExecutor;
+    private final CommandExecutor botCommandExecutor;
 
     public Level(int levelWidth,
                  int levelHeight,
                  ColliderManager colliderManager,
                  ProgressCalculator progressCalculator,
-                 BulletFactory bulletFactory) {
+                 BulletFactory bulletFactory,
+                 CommandExecutor playerCommandExecutor,
+                 CommandExecutor botCommandExecutor) {
         this.levelWidth = levelWidth;
         this.levelHeight = levelHeight;
         this.colliderManager = colliderManager;
         this.progressCalculator = progressCalculator;
         this.bulletFactory = bulletFactory;
+        this.playerCommandExecutor = playerCommandExecutor;
+        this.botCommandExecutor = botCommandExecutor;
 
         colliderManager.setLevel(this);
         bulletFactory.setLevel(this);
-        bulletFactory.setProgressCalculator(progressCalculator);
     }
 
     public int getLevelWidth() {
@@ -77,18 +83,25 @@ public class Level {
         obstacles.add(obstacle);
     }
 
-    public List<Tank> getTanks() {
-        return tanks;
+    public List<Tank> getBots() {
+        return bots;
     }
 
     public void addTank(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        var tank = new Tank(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.TANK_TIME_OF_PASSING_ONE_TILE, progressCalculator, bulletFactory, this);
-        tanks.add(tank);
+        var tank = new Tank(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.BOT_TIME_OF_PASSING_ONE_TILE, progressCalculator, bulletFactory, this);
+        bots.add(tank);
     }
 
     public ColliderManager getColliderManager() {
         return colliderManager;
+    }
+
+    public void executeCommands() {
+        playerCommandExecutor.executeFor(this, player);
+        for (Tank tank : bots) {
+            botCommandExecutor.executeFor(this, tank);
+        }
     }
 
     public void liveTimePeriod(float deltaTime) {
@@ -96,7 +109,7 @@ public class Level {
         for (GameObject obstacle : obstacles) {
             obstacle.liveTimePeriod(deltaTime);
         }
-        for (Tank tank : tanks) {
+        for (Tank tank : bots) {
             tank.liveTimePeriod(deltaTime);
         }
         for (Bullet bullet : bullets) {
@@ -112,10 +125,10 @@ public class Level {
         }
         bulletsToUnregister.clear();
 
-        for (Tank tank : tanksToUnregister) {
-            tanks.remove(tank);
+        for (Tank tank : botsToUnregister) {
+            bots.remove(tank);
         }
-        tanksToUnregister.clear();
+        botsToUnregister.clear();
     }
 
     public void addSubscriber(Subscriber subscriber) {
@@ -125,7 +138,7 @@ public class Level {
         for (GameObject obstacle : obstacles) {
             subscriber.notify(new Event(EventType.ObjectAdded, obstacle));
         }
-        for (Tank tank : tanks) {
+        for (Tank tank : bots) {
             subscriber.notify(new Event(EventType.ObjectAdded, tank));
         }
         for (GameObject bullet : bullets) {
@@ -144,7 +157,7 @@ public class Level {
     }
 
     public void unregisterTank(Tank tank) {
-        tanksToUnregister.add(tank);
+        botsToUnregister.add(tank);
         notifySubscribers(new Event(EventType.ObjectRemoved, tank));
     }
 
