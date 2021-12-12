@@ -4,9 +4,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
 import ru.mipt.bit.platformer.game.command.CommandExecutor;
-import ru.mipt.bit.platformer.game.common.Event;
-import ru.mipt.bit.platformer.game.common.EventType;
-import ru.mipt.bit.platformer.game.common.Subscriber;
+import ru.mipt.bit.platformer.game.common.*;
 import ru.mipt.bit.platformer.game.entity.factory.BulletFactory;
 
 import java.util.ArrayList;
@@ -33,9 +31,9 @@ public class Level {
     private final List<Bullet> bullets = new ArrayList<>();
     private final List<Tank> botsToUnregister = new ArrayList<>();
     private final List<Bullet> bulletsToUnregister = new ArrayList<>();
-    private final List<Subscriber> subscribers = new ArrayList<>();
     private final CommandExecutor playerCommandExecutor;
     private final CommandExecutor botCommandExecutor;
+    private final EventManager eventManager = new EventManager();
 
     public Level(int levelWidth,
                  int levelHeight,
@@ -70,7 +68,13 @@ public class Level {
 
     public void addPlayer(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        this.player = new Tank(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.PLAYER_TIME_OF_PASSING_ONE_TILE, progressCalculator, bulletFactory, this);
+        this.player = new Tank(coordinates,
+                Level.TANK_WIDTH,
+                Level.TANK_HEIGHT,
+                Level.PLAYER_TIME_OF_PASSING_ONE_TILE,
+                progressCalculator,
+                bulletFactory,
+                this);
     }
 
     public List<Obstacle> getObstacles() {
@@ -89,7 +93,13 @@ public class Level {
 
     public void addTank(int x, int y) {
         GridPoint2 coordinates = new GridPoint2(x, y);
-        var tank = new Tank(coordinates, Level.TANK_WIDTH, Level.TANK_HEIGHT, Level.BOT_TIME_OF_PASSING_ONE_TILE, progressCalculator, bulletFactory, this);
+        var tank = new Tank(coordinates,
+                Level.TANK_WIDTH,
+                Level.TANK_HEIGHT,
+                Level.BOT_TIME_OF_PASSING_ONE_TILE,
+                progressCalculator,
+                bulletFactory,
+                this);
         bots.add(tank);
     }
 
@@ -132,38 +142,36 @@ public class Level {
     }
 
     public void addSubscriber(Subscriber subscriber) {
-        subscribers.add(subscriber);
-
-        subscriber.notify(new Event(EventType.ObjectAdded, player));
+        List<Event> eventsForNewSubscriber = new ArrayList<>();
+        eventsForNewSubscriber.add(new Event(EventType.ObjectAdded, player));
         for (GameObject obstacle : obstacles) {
-            subscriber.notify(new Event(EventType.ObjectAdded, obstacle));
+            eventsForNewSubscriber.add(new Event(EventType.ObjectAdded, obstacle));
         }
         for (Tank tank : bots) {
-            subscriber.notify(new Event(EventType.ObjectAdded, tank));
+            eventsForNewSubscriber.add(new Event(EventType.ObjectAdded, tank));
         }
         for (GameObject bullet : bullets) {
-            subscriber.notify(new Event(EventType.ObjectAdded, bullet));
+            eventsForNewSubscriber.add(new Event(EventType.ObjectAdded, bullet));
+        }
+
+        eventManager.subscribe(subscriber);
+        for (Event event : eventsForNewSubscriber) {
+            eventManager.notifySubscriber(subscriber, event);
         }
     }
 
     public void registerBullet(Bullet bullet) {
         bullets.add(bullet);
-        notifySubscribers(new Event(EventType.ObjectAdded, bullet));
+        eventManager.notifySubscribers(new Event(EventType.ObjectAdded, bullet));
     }
 
     public void unregisterBullet(Bullet bullet) {
         bulletsToUnregister.add(bullet);
-        notifySubscribers(new Event(EventType.ObjectRemoved, bullet));
+        eventManager.notifySubscribers(new Event(EventType.ObjectRemoved, bullet));
     }
 
     public void unregisterTank(Tank tank) {
         botsToUnregister.add(tank);
-        notifySubscribers(new Event(EventType.ObjectRemoved, tank));
-    }
-
-    public void notifySubscribers(Event event) {
-        for (Subscriber subscriber : subscribers) {
-            subscriber.notify(event);
-        }
+        eventManager.notifySubscribers(new Event(EventType.ObjectRemoved, tank));
     }
 }
