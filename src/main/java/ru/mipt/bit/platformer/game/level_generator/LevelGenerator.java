@@ -3,13 +3,9 @@ package ru.mipt.bit.platformer.game.level_generator;
 import ru.mipt.bit.platformer.game.ProgressCalculator;
 import ru.mipt.bit.platformer.game.collision.ColliderManager;
 import ru.mipt.bit.platformer.game.entity.Level;
-import ru.mipt.bit.platformer.game.entity.Obstacle;
-import ru.mipt.bit.platformer.game.entity.Tank;
 import ru.mipt.bit.platformer.game.entity.factory.BulletFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class LevelGenerator {
     public static final int GRASS_MARKER = 0;
@@ -21,12 +17,9 @@ public abstract class LevelGenerator {
     private final ProgressCalculator progressCalculator = new ProgressCalculator();
     private final BulletFactory bulletFactory = new BulletFactory();
     protected Level level;
-    private Tank player;
-    private final List<Obstacle> obstacles = new ArrayList<>();
-    private final List<Tank> tanks = new ArrayList<>();
 
     public Level generateLevel(int levelWidth, int levelHeight) throws IOException {
-        level = new Level(levelWidth, levelHeight, player, obstacles, tanks, colliderManager, progressCalculator, bulletFactory);
+        level = new Level(levelWidth, levelHeight, colliderManager, progressCalculator, bulletFactory);
         var levelLayout = generateLevelLayout(levelWidth, levelHeight);
         generateObjectsFromGrid(levelLayout, levelWidth, levelHeight);
 

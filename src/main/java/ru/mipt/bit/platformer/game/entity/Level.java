@@ -26,28 +26,21 @@ public class Level {
     private final ColliderManager colliderManager;
     private final ProgressCalculator progressCalculator;
     private final BulletFactory bulletFactory;
-    private Tank player;
-    private final List<Obstacle> obstacles;
-    private final List<Tank> tanks;
+    private Tank player = null;
+    private final List<Obstacle> obstacles = new ArrayList<>();
+    private final List<Tank> tanks = new ArrayList<>();
     private final List<Bullet> bullets = new ArrayList<>();
     private final List<Tank> tanksToUnregister = new ArrayList<>();
     private final List<Bullet> bulletsToUnregister = new ArrayList<>();
-
     private final List<Subscriber> subscribers = new ArrayList<>();
 
     public Level(int levelWidth,
                  int levelHeight,
-                 Tank player,
-                 List<Obstacle> obstacles,
-                 List<Tank> tanks,
                  ColliderManager colliderManager,
                  ProgressCalculator progressCalculator,
                  BulletFactory bulletFactory) {
         this.levelWidth = levelWidth;
         this.levelHeight = levelHeight;
-        this.player = player;
-        this.obstacles = obstacles;
-        this.tanks = tanks;
         this.colliderManager = colliderManager;
         this.progressCalculator = progressCalculator;
         this.bulletFactory = bulletFactory;

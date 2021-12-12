@@ -1,7 +1,5 @@
 package ru.mipt.bit.platformer.game.level_generator;
 
-import ru.mipt.bit.platformer.game.entity.Level;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 
